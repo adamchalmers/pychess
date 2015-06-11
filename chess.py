@@ -2,6 +2,9 @@ from piece import Piece
 from utils import *
 import make_board
 
+class MoveException(Exception):
+	pass
+
 class Move():
 	def __init__(self, x1, y1, x2, y2, player, game):
 		self.player = player
@@ -12,22 +15,25 @@ class Move():
 		self.y1 = x1
 		self.x2 = y2
 		self.y2 = x2
-		self.validate(game)
 
 	def validate(self, game):
-		for i in [self.x1, self.y1, self.x2, self.y2]:
-			assert i >= 0 and i < 8
-		assert self.player in [BLACK, WHITE]
-		src = game.board[self.x1][self.y1]
-		dst = game.board[self.x2][self.y2]
-		assert dst is None or dst.color != self.player
-		assert src.color == self.player
+		try:
+			for i in [self.x1, self.y1, self.x2, self.y2]:
+				assert i >= 0 and i < 8, "invalid coordinate"
+			assert self.player in [BLACK, WHITE], "invalid player"
+			src = game.board[self.x1][self.y1]
+			dst = game.board[self.x2][self.y2]
+			assert dst is None or dst.color != self.player, "can't move a piece onto another of your pieces"
+			assert src is not None, "no piece at that square"
+			assert src.color == self.player, "you can't move the opponent's pieces"
+		except AssertionError as e:
+			raise MoveException(str(e))
 
 class Game():
 	
 	def __init__(self, color, pw, game_id):
 		self.game_id = game_id
-		assert color in [WHITE, BLACK]
+		assert color in [WHITE, BLACK], "Invalid player"
 		self.auth = {color: pw}
 		self.moves = []
 		self.board = make_board.make_board()
@@ -36,12 +42,18 @@ class Game():
 	def pretty(self):
 		src = self.pretty_no_borders()
 		n = src.find("\n")
-		header = "," + "="*23 + ".\n"
+		header = "," + "="*26 + ".\n"
 		out = header
-		out += "|      " + self.game_id + "(w)" + "     |\n"
+		if self.turn == WHITE:
+			color = "w"
+		else:
+			color = "b"
+		out += ("|         " + self.game_id + " (%s)" % color).ljust(27) + "|\n"
 		out += header.replace(".", "|").replace(",", "|")
-		for line in src.split("\n")[1:-1]:
-			out += "|" + line + "|\n"
+		out += "|   0  1  2  3  4  5  6  7 |\n"
+		out += "|%s|\n" % ("-"*26)
+		for i, line in enumerate(src.split("\n")[1:-1]):
+			out += "|%s| %s|\n" % (i, line)
 		out += header.replace(".", "'").replace(",", "'")
 		return out
 
@@ -60,8 +72,8 @@ class Game():
 		return color in self.auth and self.auth[color] == pw
 
 	def add_player(self, color, pw):
-		assert color not in self.auth
-		assert color in [BLACK, WHITE]
+		assert color not in self.auth, "player already added"
+		assert color in [BLACK, WHITE], "invalid player"
 		self.auth[color] = pw
 
 	def move(self, move):

@@ -1,5 +1,5 @@
 from utils import *
-from chess import Game, Move
+from chess import Game, Move, MoveException
 
 def start_repl():
 	game_id = raw_input("Please enter a game_id:\n")
@@ -31,8 +31,9 @@ def start_repl():
 		try:
 			move = Move(x1, y1, x2, y2, player, g)
 			g.move(move)
-		except AssertionError:
-			print "Illegal move %s" % movestr
+			player = not player
+		except MoveException as e:
+			print "Illegal move %s (%s)" % (movestr, e)
 			continue
 		print g.pretty()
 
