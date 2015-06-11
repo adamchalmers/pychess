@@ -1,6 +1,7 @@
 from piece import Piece
 from utils import *
 import make_board
+import threading
 
 class MoveException(Exception):
 	pass
@@ -42,6 +43,7 @@ class Game():
 		self.moves = []
 		self.board = make_board.make_board()
 		self.turn = WHITE
+		self.lock = threading.Lock()
 
 	def pretty(self):
 		src = self.pretty_no_borders()
@@ -86,6 +88,10 @@ class Game():
 		self.board[move.x1][move.y1] = None
 		self.turn = not self.turn
 		self.moves.append(move)
+
+	@property
+	def time(self):
+		return len(self.moves)
 
 def test_small():
 	g = Game(WHITE, "adampw", "adamgame")

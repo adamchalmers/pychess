@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block header %}
+{{ game_id }}
+{% endblock %}
+
+{% block content %}
+<form id="authForm">
+    Which color are you?
+    <br>
+    <input type="radio" name="color" value="white" checked>White
+    <br>
+    <input type="radio" name="color" value="black">Black
+    <br>
+    <input type="password" autofocus name="pw" placeholder="Password">
+    <input type="hidden" name="game_id" value="{{ game_id }}">
+    <button id="submit" type="button">Submit</button>
+</form>
+<script>
+$(document).ready(function() {
+    $(window).keydown(function(e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            $("#submit").click();
+        }
+    });
+    $("#submit").on("click", function() {
+        $.ajax({
+            type: "POST",
+            url: "/auth",
+            data: $("#authForm").serialize(),
+            success: function(data) {
+                if (data == "TRUE") {
+                    $("#container").html("Yes!");
+                } else {
+                    $("#container").append("<p>Wrong pw</p>");
+                }
+            }
+        });
+        return false;
+    });
+});
+</script>
+{% endblock %}
