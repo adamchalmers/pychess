@@ -8,7 +8,7 @@ class Piece():
 		self.rank = rank
 
 	def __str__(self):
-		if self.color == "white":
+		if self.color == WHITE:
 			return "w" + self.rank
 		else:
 			return "b" + self.rank
