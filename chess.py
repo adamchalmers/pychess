@@ -13,10 +13,10 @@ class Move():
 
 class Game():
 	
-	def __init__(self, color, auth, game_id):
+	def __init__(self, color, pw, game_id):
 		self.game_id = game_id
 		assert color in [WHITE, BLACK]
-		self.auth = {color: auth}
+		self.auth = {color: pw}
 		self.moves = []
 		self.board = make_board.make_board()
 		self.turn = WHITE
@@ -28,8 +28,12 @@ class Game():
 		out = out.replace("None", "..")
 		return out
 
-	def check_auth(self, color, auth):
-		return color in self.auth and self.auth[color] == auth
+	def check_auth(self, color, pw):
+		return color in self.auth and self.auth[color] == pw
+
+	def add_player(color, pw):
+		assert color not in self.auth
+		self.auth[color] = pw
 
 def test_small():
 	g = Game(WHITE, "adampw", "adamgame")
