@@ -22,6 +22,15 @@ def start_repl():
 			movestr = raw_input("Please enter a move (x1 y1 x2 y2):\n")
 		except EOFError:
 			break
+
+		if movestr.startswith("-"):
+			if movestr == "-m":
+				for move in g.moves:
+					print move
+				continue
+			else:
+				print "Invalid command"
+				continue
 		try:
 			x1, y1, x2, y2 = map(int, movestr.split(" "))
 		except ValueError:

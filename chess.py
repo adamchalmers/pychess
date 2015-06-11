@@ -26,8 +26,12 @@ class Move():
 			assert dst is None or dst.color != self.player, "can't move a piece onto another of your pieces"
 			assert src is not None, "no piece at that square"
 			assert src.color == self.player, "you can't move the opponent's pieces"
+			self.piece = game.board[self.x1][self.y1].clone()
 		except AssertionError as e:
 			raise MoveException(str(e))
+
+	def __str__(self):
+		return "(%s,%s) (%s,%s) %s" % (self.y1, self.x1, self.y2, self.x2, self.piece)
 
 class Game():
 	
@@ -81,6 +85,7 @@ class Game():
 		self.board[move.x2][move.y2] = self.board[move.x1][move.y1]
 		self.board[move.x1][move.y1] = None
 		self.turn = not self.turn
+		self.moves.append(move)
 
 def test_small():
 	g = Game(WHITE, "adampw", "adamgame")
