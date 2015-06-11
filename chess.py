@@ -93,6 +93,16 @@ class Game():
 	def time(self):
 		return len(self.moves)
 
+	def serialize(self):
+		out = ""
+		for row in self.board:
+			for piece in row:
+				if piece is None:
+					out += ".."
+				else:
+					out += str(piece)
+		return out
+
 def test_small():
 	g = Game(WHITE, "adampw", "adamgame")
 	print g.pretty()
