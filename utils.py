@@ -13,6 +13,13 @@ def str_to_color(string):
         return BLACK
     raise ChessException("%s is not a valid color" % string)
 
+def color_to_str(color):
+    if color == WHITE:
+        return "white"
+    elif color == BLACK:
+        return "black"
+    raise ChessException("%s is not a valid color" % color)
+
 def json_error(msg):
     return jsonify(error=msg)
 

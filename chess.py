@@ -96,7 +96,7 @@ class Game():
 
 	def serialize(self):
 		return {"board": self.serialize_board, 
-				"turn": self.turn, 
+				"turn": color_to_str(self.turn),
 				"moves": [str(m) for m in self.moves]
 			}
 

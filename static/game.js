@@ -71,9 +71,16 @@ function unpackBoard(string) {
  */
 function getBoard() {
     $.get("/state/" + game_id, function(data) {
+
+        /* If the board returned successfully,
+         * and new moves have occured, 
+         * refresh the board. */
         if (!data.error && data.data.moves.length > now) {
             console.log(now + " Got board " + data.data.moves.length)
             now = data.data.moves.length;
+
+            $(".turn").text(data.data.turn + "'s turn.");
+
             board = unpackBoard(data.data.board);
             drawBoard(board);
             $("#game").show();
