@@ -1,11 +1,14 @@
 TILE_SIZE = 50;
-SELECT_BORDER = 5;
 OFFSET = 10;
 REFRESH_RATE = 3 * 1000;
+HL_SIZE = 5;
 ctx = undefined;
 game_id = $("#game_id").val();
 board = undefined;
 now = -1;
+turn = undefined;
+squareSelected = null;
+player = undefined;
 
 
 $(document).ready(function() {
@@ -16,6 +19,24 @@ $(document).ready(function() {
         if (e.keyCode == 13) {
             e.preventDefault();
             $("#submit").click();
+        }
+    });
+
+    $("canvas").on("click", function(evt) {
+        if (player == turn) {
+            var x = Math.floor((evt.offsetX - OFFSET)/TILE_SIZE);
+            var y = Math.floor((evt.offsetY - OFFSET)/TILE_SIZE);
+            if (x >= 0 && y >= 0 && x < 8 && y<8) {
+                if (squareSelected === null) {
+                    squareSelected = [x, y];
+                    highlightCell(x,y);
+                } else {
+                    j = squareSelected[0];
+                    i = squareSelected[1];
+                    drawCell(j, i, board[i][j].substring(1), board[i][j].substring(0,1) == "w");
+                    squareSelected = null;
+                }
+            }
         }
     });
 
@@ -32,7 +53,9 @@ $(document).ready(function() {
                 // If there's no error
                 if (!data.error) {
                     $("#login").hide();
-
+                    player = data.data;
+                    console.log(data);
+                    $(".player").text(player);
                     // Draw the board every few seconds
                     getBoard();
                     window.setInterval(function(){
@@ -79,7 +102,8 @@ function getBoard() {
             console.log(now + " Got board " + data.data.moves.length)
             now = data.data.moves.length;
 
-            $(".turn").text(data.data.turn + "'s turn.");
+            turn = data.data.turn;
+            $(".turn").text(data.data.turn);
 
             board = unpackBoard(data.data.board);
             drawBoard(board);
@@ -101,14 +125,28 @@ function drawBoard(board) {
     }
 }
 
-function drawCell(i, j, text, color) {
+function drawCell(i, j, text, color, leaveHighlight) {
   // Draw the board cell
   if ((i*8 + j + i%2)%2==0) {
     ctx.fillStyle = "#fff";
   } else {
     ctx.fillStyle = "#000";
   }
-  ctx.fillRect(OFFSET + i*TILE_SIZE, OFFSET + j*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+  if (leaveHighlight) {
+    ctx.fillRect(
+        OFFSET + HL_SIZE + i*TILE_SIZE, 
+        OFFSET + HL_SIZE + j*TILE_SIZE, 
+        TILE_SIZE - 2*HL_SIZE, 
+        TILE_SIZE - 2*HL_SIZE
+    );
+  } else {
+    ctx.fillRect(
+        OFFSET + i*TILE_SIZE, 
+        OFFSET + j*TILE_SIZE, 
+        TILE_SIZE, 
+        TILE_SIZE
+    );
+  }
 
   // Write in the piece
   if (text != ".") {
@@ -120,5 +158,15 @@ function drawCell(i, j, text, color) {
     }
     ctx.fillText(text, OFFSET + i*TILE_SIZE + 10, 4*OFFSET + j*TILE_SIZE)
   }
-  
+}
+
+function highlightCell(i, j) {
+    ctx.fillStyle = "orange";
+    ctx.fillRect(
+        OFFSET + i*TILE_SIZE, 
+        OFFSET + j*TILE_SIZE, 
+        TILE_SIZE, 
+        TILE_SIZE
+    );
+    drawCell(i, j, board[j][i].substring(1), board[j][i].substring(0,1) == "w", true);
 }

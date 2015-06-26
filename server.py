@@ -65,7 +65,7 @@ def auth():
 	game_id = request.form["game_id"]
 
 	if game_id in games and games[game_id].auth[color] == pw:
-		return json_error("")
+		return json_data(request.form["color"])
 	else:
 		return json_error("wrong auth!")
 
