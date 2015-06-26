@@ -31,7 +31,8 @@ $(document).ready(function() {
                 if (!data.error) {
                     $("#login").hide();
 
-                    // Get the board state, parse it and draw the board.
+                    // Draw the board every few seconds
+                    getBoard()
                     window.setInterval(function(){
                       getBoard();
                     }, REFRESH_RATE);
@@ -84,12 +85,12 @@ function drawBoard(board) {
     ctx.fillRect(0, 0, TILE_SIZE*8 + OFFSET*2, TILE_SIZE*8 + OFFSET*2);
     for (var i = 0; i < 8; i++) {
         for (var j = 0; j < 8; j++) {
-            drawCell(j, i, board[i][j]);
+            drawCell(j, i, board[i][j].substring(1), board[i][j].substring(0,1) == "w");
         }
     }
 }
 
-function drawCell(i, j, text) {
+function drawCell(i, j, text, color) {
   // Draw the board cell
   if ((i*8 + j + i%2)%2==0) {
     ctx.fillStyle = "#fff";
@@ -99,9 +100,13 @@ function drawCell(i, j, text) {
   ctx.fillRect(OFFSET + i*TILE_SIZE, OFFSET + j*TILE_SIZE, TILE_SIZE, TILE_SIZE);
 
   // Write in the piece
-  if (text != "..") {
+  if (text != ".") {
     ctx.font = "24px serif ";
-    ctx.fillStyle = "#09f";
+    if (color) {
+        ctx.fillStyle = "#09f";
+    } else {
+        ctx.fillStyle = "#048";
+    }
     ctx.fillText(text, OFFSET + i*TILE_SIZE + 10, 4*OFFSET + j*TILE_SIZE)
   }
   
