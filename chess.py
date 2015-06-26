@@ -20,7 +20,8 @@ class Move():
 	def validate(self, game):
 		try:
 			for i in [self.x1, self.y1, self.x2, self.y2]:
-				assert i >= 0 and i < 8, "invalid coordinate"
+				assert i >= 0 and i < 8, "invalid coordinate (%s)" % i
+			assert game.turn == self.player, "It's not your turn."
 			assert self.player in [BLACK, WHITE], "invalid player"
 			src = game.board[self.x1][self.y1]
 			dst = game.board[self.x2][self.y2]

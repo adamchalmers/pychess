@@ -1,7 +1,10 @@
 TILE_SIZE = 50;
 SELECT_BORDER = 5;
 OFFSET = 10;
+REFRESH_RATE = 3 * 1000
 ctx = null;
+game_id = $("#game_id").val();
+
 
 $(document).ready(function() {
     ctx = $("#canvas")[0].getContext("2d");
@@ -29,11 +32,9 @@ $(document).ready(function() {
                     $("#login").hide();
 
                     // Get the board state, parse it and draw the board.
-                    board = getBoard($("#game_id").val(), function(data) {
-                        board = unpackBoard(data.data.board);
-                        drawBoard(board);
-                        $("#game").show();
-                    });
+                    window.setInterval(function(){
+                      getBoard();
+                    }, REFRESH_RATE);
                 // If there is an error
                 } else {
                     $("#login").append("<p>Wrong pw</p>");
@@ -63,12 +64,14 @@ function unpackBoard(string) {
 }
 
 /*
- * Do a GET for the board state, then execute the callback.
+ * GET the board, then draw it.
  */
-function getBoard(game_id, callback) {
+function getBoard() {
     $.get("/state/" + game_id, function(data) {
         if (!data.error) {
-            callback(data);
+            board = unpackBoard(data.data.board);
+            drawBoard(board);
+            $("#game").show();
         }
     });
 }
@@ -99,7 +102,7 @@ function drawCell(i, j, text) {
   if (text != "..") {
     ctx.font = "24px serif ";
     ctx.fillStyle = "#09f";
-    ctx.fillText(text, OFFSET + i*TILE_SIZE, 4*OFFSET + j*TILE_SIZE)
+    ctx.fillText(text, OFFSET + i*TILE_SIZE + 10, 4*OFFSET + j*TILE_SIZE)
   }
   
 }
