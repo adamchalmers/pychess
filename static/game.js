@@ -25,12 +25,12 @@ $(document).ready(function() {
             success: function(data) {
 
                 // If there's no error
-                if (data.error == "") {
+                if (!data.error) {
                     $("#login").hide();
 
                     // Get the board state, parse it and draw the board.
                     board = getBoard($("#game_id").val(), function(data) {
-                        board = unpackBoard(data.data);
+                        board = unpackBoard(data.data.board);
                         drawBoard(board);
                         $("#game").show();
                     });
@@ -67,8 +67,7 @@ function unpackBoard(string) {
  */
 function getBoard(game_id, callback) {
     $.get("/state/" + game_id, function(data) {
-        if (data.error != "") {
-        } else {
+        if (!data.error) {
             callback(data);
         }
     });

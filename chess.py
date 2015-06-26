@@ -3,7 +3,7 @@ from utils import *
 import make_board
 import threading
 
-class MoveException(Exception):
+class MoveException(ChessException):
 	pass
 
 class Move():
@@ -94,6 +94,13 @@ class Game():
 		return len(self.moves)
 
 	def serialize(self):
+		return {"board": self.serialize_board, 
+				"turn": self.turn, 
+				"moves": [str(m) for m in self.moves]
+			}
+
+	@property
+	def serialize_board(self):
 		out = ""
 		for row in self.board:
 			for piece in row:
