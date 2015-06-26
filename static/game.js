@@ -1,9 +1,11 @@
 TILE_SIZE = 50;
 SELECT_BORDER = 5;
 OFFSET = 10;
-REFRESH_RATE = 3 * 1000
-ctx = null;
+REFRESH_RATE = 3 * 1000;
+ctx = undefined;
 game_id = $("#game_id").val();
+board = undefined;
+now = -1;
 
 
 $(document).ready(function() {
@@ -32,9 +34,9 @@ $(document).ready(function() {
                     $("#login").hide();
 
                     // Draw the board every few seconds
-                    getBoard()
+                    getBoard();
                     window.setInterval(function(){
-                      getBoard();
+                        getBoard();
                     }, REFRESH_RATE);
                 // If there is an error
                 } else {
@@ -69,7 +71,9 @@ function unpackBoard(string) {
  */
 function getBoard() {
     $.get("/state/" + game_id, function(data) {
-        if (!data.error) {
+        if (!data.error && data.data.moves.length > now) {
+            console.log(now + " Got board " + data.data.moves.length)
+            now = data.data.moves.length;
             board = unpackBoard(data.data.board);
             drawBoard(board);
             $("#game").show();
