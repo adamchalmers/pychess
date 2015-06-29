@@ -6,13 +6,10 @@ class MoveException(ChessException):
 class Move():
   def __init__(self, x1, y1, x2, y2, player, game):
     self.player = player
-    #print "(%d,%d) to (%d,%d)" % (x1, y1, x2, y2)
-    #print game.board[y1][x1]
-    #print game.board[y2][x2]
-    self.x1 = y1
-    self.y1 = x1
-    self.x2 = y2
-    self.y2 = x2
+    self.x1 = x1
+    self.y1 = y1
+    self.x2 = x2
+    self.y2 = y2
 
   def validate(self, game):
     try:
@@ -42,7 +39,38 @@ def core_val(m, game):
 
 # TODO: implement these.
 def pawn_val(m, game):
-  pass
+  src = game.board[m.x1][m.y1]
+  dst = game.board[m.x2][m.y2]
+  xdist = abs(m.x1-m.x2)
+  ydist = m.y2-m.y1
+
+  # Check the player hasn't moved backwards
+  if (m.player == BLACK and ydist <= 0) or (m.player == WHITE and ydist >= 0):
+    raise MoveException("You can't move pawns backwards.")
+
+  # Moving directly forward (no capture)
+  if xdist == 0 and dst == None:
+
+    # You can move forward 2 squares from your starting row
+    if abs(ydist) == 2:
+      if (m.player == BLACK and m.y1 == 1) or (m.player == WHITE and m.y1 == 6):
+        return
+    # Otherwise you can move forward one square
+    elif abs(ydist) == 1:
+      return
+
+  # Capturing diagonally:
+  if xdist == 1 and abs(ydist) == 1 and dst is not None:
+    if src.color != dst.color:
+      return
+
+  # TODO: add en passant.
+  # This and castling will require tagging the game state when moves are processed, 
+  # so you can look at tags like 'check' or 'en passant' or 'castleable' to see if an action is valid.
+
+  raise MoveException("Pawns can either move 1 square forward, 2 squares forward from their starting position, or diagonally-forward one square to capture.")
+
+
 def queen_val(m, game):
   pass
 def king_val(m, game):
@@ -52,7 +80,11 @@ def bishop_val(m, game):
 def rook_val(m, game):
   pass
 def knight_val(m, game):
-  pass
+  xdist = abs(m.x1-m.x2)
+  ydist = abs(m.y2-m.y1)
+  if (xdist == 1 and ydist == 2) or (xdist == 2 and ydist == 1):
+    return
+  raise MoveException("Knights must move 2 squares in one direction and 1 square in the other direction.")
 
 
 RANK_VAL = {

@@ -132,7 +132,8 @@ function unpackBoard(string) {
             newBoard[i][j] = board[j][i];
         }
     }
-    return newBoard;
+    // return newBoard;
+    return board;
 }
 
 /*

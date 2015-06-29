@@ -21,4 +21,9 @@ def make_board():
 	board[7][4] = Piece(WHITE, "K")
 	board[0][4] = Piece(BLACK, "Q")
 	board[0][3] = Piece(BLACK, "K")
-	return board
+
+	flipped = [[None for i in range(8)] for i in range(8)]
+	for i in range(8):
+		for j in range(8):
+			flipped[i][j] = board[j][i]
+	return flipped
