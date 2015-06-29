@@ -13,7 +13,8 @@ player = undefined;
 
 
 $(document).ready(function() {
-    ctx = $("#canvas")[0].getContext("2d");
+    ctx = $("#chessBoard")[0].getContext("2d");
+    $("#game").hide();
 
     // Ensure the form doesn't submit when the user presses 'enter'
     $(window).keydown(function(e) {
@@ -23,40 +24,43 @@ $(document).ready(function() {
         }
     });
 
-    $("canvas").on("click", handleClick);
-
-    // When the user presses submit, authenticate them.
-    $("#submit").on("click", function() {
-
-        // Send a post request to the server for validation
-        $.ajax({
-            type: "POST",
-            url: "/auth",
-            data: $("#authForm").serialize(),
-            success: function(data) {
-
-                // If there's no error
-                if (!data.error) {
-
-                    $("#login").hide();
-                    player = data.data;
-                    $(".player").text(player);
-
-                    // Draw the board every few seconds
-                    getBoard();
-                    window.setInterval(function(){
-                        getBoard();
-                    }, REFRESH_RATE);
-
-                // If there is an error
-                } else {
-                    $("#login").append("<p>Wrong pw</p>");
-                }
-            }
-        });
-        return false;
-    });
+    $("#chessBoard").on("click", handleClick);
+    $("#submit").on("click", authenticateUser);
 });
+
+function authenticateUser() {
+// Send a post request to the server for validation
+    $.ajax({
+        type: "POST",
+        url: "/auth",
+        data: $("#authForm").serialize(),
+        success: function(data) {
+
+            // If there's no error
+            if (!data.error || data.error=="NEWAUTH") {
+
+                if (data.error=="NEWAUTH") {
+                    alert("Welcome to the game.")
+                }
+
+                $("#welcome").hide();
+                player = data.data;
+                $(".player").text(player);
+
+                // Draw the board every few seconds
+                getBoard();
+                window.setInterval(function(){
+                    getBoard();
+                }, REFRESH_RATE);
+
+            // If there is an error
+            } else {
+                $("#welcome").append("<p>Wrong pw</p>");
+            }
+        }
+    });
+    return false;
+}
 
 function handleClick(evt) {
     if (player == turn) {
@@ -75,7 +79,7 @@ function canvasClick(x, y) {
 
     // No squares selected
     if (squareSelected === null) {
-        // Ignore clicks on empty/opponent-controlled squares.
+        // Ignore clicks that aren't on your pieces.
         if (board[x][y].substring(0,1) != turn.substring(0,1)) {
             return;
         }
@@ -86,6 +90,20 @@ function canvasClick(x, y) {
     } else {
         i = squareSelected[0];
         j = squareSelected[1];
+        // Ignore clicks on your pieces.
+        if (board[x][y].substring(0,1) == turn.substring(0,1)) {
+            return;
+        }
+
+        url = ["/move", game_id, turn, i, j, x, y].join("/");
+        console.log(url);
+        $.get(url, function(data) {
+            if (!data.error) {
+                getBoard();
+            } else {
+                $(".error").text(data.error);
+            }
+        });
         drawCell(i, j, board[i][j].substring(1), board[i][j].substring(0,1) == "w");
         squareSelected = null;
     }
@@ -117,25 +135,28 @@ function unpackBoard(string) {
 }
 
 /*
- * GET the board, then draw it.
+ * GET the board, then update with it.
  */
 function getBoard() {
     $.get("/state/" + game_id, function(data) {
-
-        /* If the board returned successfully,
-         * and new moves have occured, 
-         * refresh the board. */
-        if (!data.error && data.data.moves.length > now) {
-            now = data.data.moves.length;
-
-            turn = data.data.turn;
-            $(".turn").text(data.data.turn);
-
-            board = unpackBoard(data.data.board);
-            drawBoard(board);
-            $("#game").show();
-        }
+        if (!data.error) updateBoard(data.data); 
     });
+}
+
+/* 
+ * If new moves have occurred, update and redraw the board.
+ */
+function updateBoard(state) {
+    if (state.moves.length > now) {
+        now = state.moves.length;
+
+        turn = state.turn;
+        $(".turn").text(state.turn);
+
+        board = unpackBoard(state.board);
+        drawBoard(board);
+        $("#game").show();
+    }
 }
 
 /*
@@ -178,7 +199,7 @@ function drawCell(i, j, text, color, leaveHighlight) {
   if (text != ".") {
     ctx.font = "24px serif ";
     if (color) {
-        ctx.fillStyle = "#09f";
+        ctx.fillStyle = "#840";
     } else {
         ctx.fillStyle = "#048";
     }

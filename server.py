@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 from chess import Game, Move, MoveException
 from utils import *
 app = Flask(__name__)
-games = {"adam1": Game(WHITE, "password", "adam1")}
+games = {"adam1": Game(WHITE, "pw", "adam1")}
 
 class ChessServerError(ChessException):
 	pass
@@ -47,12 +47,14 @@ def move(game_id, player, x1, y1, x2, y2):
 
 	if game_id not in games:
 		return json_error("No such game!")
+
 	player = str_to_color(player)
 	move = Move(x1, y1, x2, y2, player, game_id)
 	try:
 		move.validate(games[game_id])
 	except MoveException as e:
 		return json_error(str(e))
+		
 	games[game_id].move(move)
 	return state(game_id)
 
@@ -64,10 +66,38 @@ def auth():
 	pw = request.form["pw"]
 	game_id = request.form["game_id"]
 
-	if game_id in games and games[game_id].auth[color] == pw:
+	if game_id not in games:
+		return json_error("No such game ID!")
+
+	# Right now, if they log into a player who hasn't played yet,
+	# just set the password they send as that player's pass and log them in.
+	if color not in games[game_id].auth:
+		games[game_id].auth[color] = pw
+		return jsonify(error="NEWAUTH", data=request.form["color"])
+
+	if games[game_id].auth[color] == pw:
 		return json_data(request.form["color"])
 	else:
 		return json_error("wrong auth!")
+
+
+#############################
+#            Misc           #
+#############################
+
+@app.route("/shutdown")
+def shutdown():
+	func = request.environ.get('werkzeug.server.shutdown')
+	if func is None:
+		raise RuntimeError('Not running with the Werkzeug Server')
+	func()
+	return 'Server shutting down...'
+
+@app.route("/restart")
+def restart():
+	shutdown()
+	app.run(debug=True)
+	return redirect(url_for('/'))
 
 if __name__ == "__main__":
 	app.run(debug=True)

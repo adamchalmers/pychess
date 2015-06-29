@@ -5,23 +5,30 @@
 {% endblock %}
 
 {% block content %}
-<div id="login">
+<div id="welcome">
     <form id="authForm">
         Which color are you?
+
         <br>
-        <input type="radio" name="color" value="white" checked>White
+        <input type="radio" name="color" value="white" id="white"><label for="white">White</label>
         <br>
-        <input type="radio" name="color" value="black">Black
+        <input type="radio" name="color" value="black" id="black"><label for="black">Black</label>
         <br>
-        <input type="password" autofocus name="pw" placeholder="Password">
+        <span id="login">
+            <input type="password" autofocus name="pw" placeholder="Password">
+            <button id="submit" type="button">Submit</button>
+        </span>
         <input type="hidden" name="game_id" id="game_id" value="{{ game_id }}">
-        <button id="submit" type="button">Submit</button>
     </form>
 </div>
-<div id="game" style="display:none;">
-    <canvas id="canvas" width="600" height="600"></canvas>
-    <p>You are playing <span class="player"></span></p>
-    <p>It's <span class="turn">  </span>'s turn.</p>
+<div id="game">
+    <div id="leftCol">
+        <canvas id="chessBoard" width="500" height="600"></canvas>
+    </div>
+    <div id="rightCol">
+        <p>You are playing <span class="player"></span> (it's <span class="turn"></span>'s turn).</p>
+        <p class="error"></p>
+    </div>
 </div>
 <script src="/static/game.js"></script>
 {% endblock %}

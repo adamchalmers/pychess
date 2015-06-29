@@ -3,8 +3,30 @@
     margin: 0 auto;
     border: 1px solid gray;
     padding: 20px;
+    position: absolute;
+    height: 600px;
+}
+
+body {
+  font-family: sans-serif;
 }
 
 h1 {
     text-align: center;
+}
+
+#leftCol {
+  position: absolute;
+  left: 5px;
+}
+
+
+#rightCol {
+  position: absolute;
+  right: 5px;
+  width: 200px;
+}
+
+.error {
+  color: red;
 }
