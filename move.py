@@ -72,34 +72,57 @@ def pawn_val(m, game):
 
 
 def queen_val(m, game):
-  pass
+
+  # Return if it's a legal rook move, otherwise keep trying.
+  try:
+    rook_val(m, game)
+    return
+  except MoveException:
+    pass
+
+  # Return if it's a legal bishop move, otherwise error.
+  try:
+    bishop_val(m, game)
+    return
+  except MoveException:
+    raise MoveException("Your queen can't move there. Queens can move like bishops or like rooks.")
+
 def king_val(m, game):
-  pass
+  xdist = m.x2-m.x1
+  ydist = m.y2-m.y1
+
+  if abs(xdist) > 1 or abs(ydist) > 1:
+    raise MoveException("Kings can only move one square away.")
+
+  # Kings can't move next to other kings
+  for i in range(m.x2-1, m.x2+2):
+    for j in range(m.y2-1, m.y2+2):
+      if game.board[i][j] is not None and game.board[i][j].rank == "K" and game.board[i][j].color != m.player:
+        raise MoveException("A king can't move next to another king.")
+
 def bishop_val(m, game):
   xdist = m.x2-m.x1
   ydist = m.y2-m.y1
-def rook_val(m, game, rank="Rook"):
+
+  if (abs(xdist) != abs(ydist)):
+    raise MoveException("Bishops must move diagonally.")
+
+  path_clear(m, game, xdist/abs(xdist), ydist/abs(ydist))
+
+
+
+def rook_val(m, game):
   xdist = m.x2-m.x1
   ydist = m.y2-m.y1
   if (xdist == 0 and ydist == 0) or (xdist != 0 and ydist != 0):
-    raise MoveException("%ss can only move in a straight line left, right, up or down." % rank)
+    raise MoveException("Rooks can only move in a straight line left, right, up or down.")
 
   if xdist != 0:
-    curr = m.x1 + xdist/abs(xdist)
-    while curr < 8 and curr >= 0:
-      if curr == m.x2:
-        return
-      if game.board[curr][m.y1] is not None:
-        raise MoveException("There's a piece in your way.")
-      curr += xdist/abs(xdist)
+    path_clear(m, game, xdist/abs(xdist), 0)
+    return
   else:
-    curr = m.y1 + ydist/abs(ydist)
-    while curr < 8 and curr >= 0:
-      if curr == m.y2:
-        return
-      if game.board[m.x1][curr] is not None:
-        raise MoveException("There's a piece in your way.")
-      curr += ydist/abs(ydist)
+    path_clear(m, game, 0, ydist/abs(ydist))
+    return
   
   raise MoveException("Something very weird.")
 
@@ -111,6 +134,17 @@ def knight_val(m, game):
     return
   raise MoveException("Knights must move 2 squares in one direction and 1 square in the other direction.")
 
+def path_clear(m, game, dx, dy):
+  x = m.x1 + dx
+  y = m.y1 + dy
+  while x < 8 and y < 8 and x >= 0 and y >= 0:
+    if m.x2 == x and m.y2 == y:
+      return
+    if game.board[x][y] is not None:
+      raise MoveException("There's a piece in your way.")
+    x += dx
+    y += dy
+  raise MoveException("You can't reach that point.")
 
 RANK_VAL = {
   "P": pawn_val,
