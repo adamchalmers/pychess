@@ -6,6 +6,7 @@ ctx = undefined;
 game_id = $("#game_id").val();
 board = undefined;
 now = -1;
+// Will be 'white' or 'black'
 turn = undefined;
 squareSelected = null;
 player = undefined;
@@ -22,23 +23,7 @@ $(document).ready(function() {
         }
     });
 
-    $("canvas").on("click", function(evt) {
-        if (player == turn) {
-            var x = Math.floor((evt.offsetX - OFFSET)/TILE_SIZE);
-            var y = Math.floor((evt.offsetY - OFFSET)/TILE_SIZE);
-            if (x >= 0 && y >= 0 && x < 8 && y<8) {
-                if (squareSelected === null) {
-                    squareSelected = [x, y];
-                    highlightCell(x,y);
-                } else {
-                    j = squareSelected[0];
-                    i = squareSelected[1];
-                    drawCell(j, i, board[i][j].substring(1), board[i][j].substring(0,1) == "w");
-                    squareSelected = null;
-                }
-            }
-        }
-    });
+    $("canvas").on("click", handleClick);
 
     // When the user presses submit, authenticate them.
     $("#submit").on("click", function() {
@@ -52,15 +37,17 @@ $(document).ready(function() {
 
                 // If there's no error
                 if (!data.error) {
+
                     $("#login").hide();
                     player = data.data;
-                    console.log(data);
                     $(".player").text(player);
+
                     // Draw the board every few seconds
                     getBoard();
                     window.setInterval(function(){
                         getBoard();
                     }, REFRESH_RATE);
+
                 // If there is an error
                 } else {
                     $("#login").append("<p>Wrong pw</p>");
@@ -71,6 +58,39 @@ $(document).ready(function() {
     });
 });
 
+function handleClick(evt) {
+    if (player == turn) {
+        var x = Math.floor((evt.offsetX - OFFSET)/TILE_SIZE);
+        var y = Math.floor((evt.offsetY - OFFSET)/TILE_SIZE);
+        if (x >= 0 && y >= 0 && x < 8 && y<8) {
+            canvasClick(x,y);
+        }
+    }
+}
+
+/**
+ * Called when a player clicks square (x,y) on the board.
+ */
+function canvasClick(x, y) {
+
+    // No squares selected
+    if (squareSelected === null) {
+        // Ignore clicks on empty/opponent-controlled squares.
+        if (board[x][y].substring(0,1) != turn.substring(0,1)) {
+            return;
+        }
+        squareSelected = [x, y];
+        highlightCell(x,y);
+
+    // Square already selected
+    } else {
+        i = squareSelected[0];
+        j = squareSelected[1];
+        drawCell(i, j, board[i][j].substring(1), board[i][j].substring(0,1) == "w");
+        squareSelected = null;
+    }
+}
+
 /* 
  * Parse a serialized board string
  * Returns an 8x8 array of strings.
@@ -80,13 +100,20 @@ $(document).ready(function() {
 function unpackBoard(string) {
     string = string.split("")
     board = []
+    newBoard = [];
     for (var i = 0; i < 8; i++) {
         board.push([]);
+        newBoard.push([]);
         for (var j = 0; j < 16; j+=2) {
             board[i].push(string[i*16+j] + string[i*16+j+1])
         }
     }
-    return board
+    for (var i = 0; i < 8; i++) {
+        for (var j = 0; j < 8; j++) {
+            newBoard[i][j] = board[j][i];
+        }
+    }
+    return newBoard;
 }
 
 /*
@@ -99,7 +126,6 @@ function getBoard() {
          * and new moves have occured, 
          * refresh the board. */
         if (!data.error && data.data.moves.length > now) {
-            console.log(now + " Got board " + data.data.moves.length)
             now = data.data.moves.length;
 
             turn = data.data.turn;
@@ -120,7 +146,7 @@ function drawBoard(board) {
     ctx.fillRect(0, 0, TILE_SIZE*8 + OFFSET*2, TILE_SIZE*8 + OFFSET*2);
     for (var i = 0; i < 8; i++) {
         for (var j = 0; j < 8; j++) {
-            drawCell(j, i, board[i][j].substring(1), board[i][j].substring(0,1) == "w");
+            drawCell(i, j, board[i][j].substring(1), board[i][j].substring(0,1) == "w");
         }
     }
 }
@@ -168,5 +194,5 @@ function highlightCell(i, j) {
         TILE_SIZE, 
         TILE_SIZE
     );
-    drawCell(i, j, board[j][i].substring(1), board[j][i].substring(0,1) == "w", true);
+    drawCell(i, j, board[i][j].substring(1), board[i][j].substring(0,1) == "w", true);
 }
