@@ -76,9 +76,34 @@ def queen_val(m, game):
 def king_val(m, game):
   pass
 def bishop_val(m, game):
-  pass
-def rook_val(m, game):
-  pass
+  xdist = m.x2-m.x1
+  ydist = m.y2-m.y1
+def rook_val(m, game, rank="Rook"):
+  xdist = m.x2-m.x1
+  ydist = m.y2-m.y1
+  if (xdist == 0 and ydist == 0) or (xdist != 0 and ydist != 0):
+    raise MoveException("%ss can only move in a straight line left, right, up or down." % rank)
+
+  if xdist != 0:
+    curr = m.x1 + xdist/abs(xdist)
+    while curr < 8 and curr >= 0:
+      if curr == m.x2:
+        return
+      if game.board[curr][m.y1] is not None:
+        raise MoveException("There's a piece in your way.")
+      curr += xdist/abs(xdist)
+  else:
+    curr = m.y1 + ydist/abs(ydist)
+    while curr < 8 and curr >= 0:
+      if curr == m.y2:
+        return
+      if game.board[m.x1][curr] is not None:
+        raise MoveException("There's a piece in your way.")
+      curr += ydist/abs(ydist)
+  
+  raise MoveException("Something very weird.")
+
+
 def knight_val(m, game):
   xdist = abs(m.x1-m.x2)
   ydist = abs(m.y2-m.y1)

@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 from chess import Game
 from move import Move, MoveException
 from utils import *
+import logging
 app = Flask(__name__)
 games = {"adam1": Game(WHITE, "pw", "adam1")}
 
@@ -101,4 +102,6 @@ def restart():
 	return redirect(url_for('/'))
 
 if __name__ == "__main__":
+	log = logging.getLogger('werkzeug')
+	#log.setLevel(logging.ERROR)
 	app.run(debug=True)
