@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-from chess import Game, Move, MoveException
+from chess import Game
+from move import Move, MoveException
 from utils import *
 app = Flask(__name__)
 games = {"adam1": Game(WHITE, "pw", "adam1")}

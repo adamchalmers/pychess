@@ -42,7 +42,7 @@ function authenticateUser() {
                 if (data.error=="NEWAUTH") {
                     alert("Welcome to the game.")
                 }
-
+                $(".error").text("");
                 $("#welcome").hide();
                 player = data.data;
                 $(".player").text(player);
@@ -55,7 +55,7 @@ function authenticateUser() {
 
             // If there is an error
             } else {
-                $("#welcome").append("<p>Wrong pw</p>");
+                $(".error").text("Wrong password.");
             }
         }
     });
@@ -100,6 +100,7 @@ function canvasClick(x, y) {
         $.get(url, function(data) {
             if (!data.error) {
                 getBoard();
+                $(".error").text("");
             } else {
                 $(".error").text(data.error);
             }

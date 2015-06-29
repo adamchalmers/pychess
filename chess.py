@@ -2,38 +2,8 @@ from piece import Piece
 from utils import *
 import make_board
 import threading
+import move
 
-class MoveException(ChessException):
-	pass
-
-class Move():
-	def __init__(self, x1, y1, x2, y2, player, game):
-		self.player = player
-		#print "(%d,%d) to (%d,%d)" % (x1, y1, x2, y2)
-		#print game.board[y1][x1]
-		#print game.board[y2][x2]
-		self.x1 = y1
-		self.y1 = x1
-		self.x2 = y2
-		self.y2 = x2
-
-	def validate(self, game):
-		try:
-			for i in [self.x1, self.y1, self.x2, self.y2]:
-				assert i >= 0 and i < 8, "invalid coordinate (%s)" % i
-			assert game.turn == self.player, "It's not your turn."
-			assert self.player in [BLACK, WHITE], "invalid player"
-			src = game.board[self.x1][self.y1]
-			dst = game.board[self.x2][self.y2]
-			assert dst is None or dst.color != self.player, "can't move a piece onto another of your pieces"
-			assert src is not None, "no piece at that square"
-			assert src.color == self.player, "you can't move the opponent's pieces"
-			self.piece = game.board[self.x1][self.y1].clone()
-		except AssertionError as e:
-			raise MoveException(str(e))
-
-	def __str__(self):
-		return "(%s,%s) (%s,%s) %s" % (self.y1, self.x1, self.y2, self.x2, self.piece)
 
 class Game():
 	
