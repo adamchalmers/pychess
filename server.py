@@ -51,7 +51,7 @@ def move(game_id, player, x1, y1, x2, y2):
 		return json_error("No such game!")
 
 	player = str_to_color(player)
-	move = Move(x1, y1, x2, y2, player, game_id)
+	move = Move(x1, y1, x2, y2, player, games[game_id])
 	try:
 		move.validate(games[game_id])
 	except MoveException as e:
