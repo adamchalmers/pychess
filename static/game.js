@@ -90,21 +90,20 @@ function canvasClick(x, y) {
     } else {
         i = squareSelected[0];
         j = squareSelected[1];
-        // Ignore clicks on your pieces.
-        if (board[x][y].substring(0,1) == turn.substring(0,1)) {
+        // If you click a square which isn't occupied by your piece, try moving there.
+        if (board[x][y].substring(0,1) != turn.substring(0,1)) {
+            url = ["/move", game_id, turn, i, j, x, y].join("/");
+            console.log(url);
+            $.get(url, function(data) {
+                if (!data.error) {
+                    getBoard();
+                    $(".error").text("");
+                } else {
+                    $(".error").text(data.error);
+                }
+            });
             return;
         }
-
-        url = ["/move", game_id, turn, i, j, x, y].join("/");
-        console.log(url);
-        $.get(url, function(data) {
-            if (!data.error) {
-                getBoard();
-                $(".error").text("");
-            } else {
-                $(".error").text(data.error);
-            }
-        });
         drawCell(i, j, board[i][j].substring(1), board[i][j].substring(0,1) == "w");
         squareSelected = null;
     }
