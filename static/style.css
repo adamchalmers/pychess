@@ -30,3 +30,8 @@ h1 {
 .error {
   color: red;
 }
+
+#chessboard {
+  width: 500px;
+  height: 600px;
+}
