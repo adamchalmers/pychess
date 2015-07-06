@@ -15,7 +15,7 @@ class Move():
   def validate(self, game):
     try:
       core_val(self, game)
-      rank = game.board[self.x1][self.y1].rank
+      rank = game.board[self.x1][self.y1].char
 
       RANK_VAL[rank](self, game)
 
@@ -136,6 +136,7 @@ def knight_val(m, game):
   raise MoveException("Knights must move 2 squares in one direction and 1 square in the other direction.")
 
 def path_clear(m, game, dx, dy):
+  """Checks if the path from m's start to m's end is clear."""
   x = m.x1 + dx
   y = m.y1 + dy
   while x < 8 and y < 8 and x >= 0 and y >= 0:

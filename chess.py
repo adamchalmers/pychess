@@ -56,6 +56,8 @@ class Game():
 	def move(self, move):
 		move.validate(self)	
 		self.board[move.x2][move.y2] = self.board[move.x1][move.y1]
+		self.board[move.x2][move.y2].x = move.x2
+		self.board[move.x2][move.y2].y = move.y2
 		self.board[move.x1][move.y1] = None
 		self.turn = not self.turn
 		self.moves.append(move)
