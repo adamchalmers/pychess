@@ -2,37 +2,42 @@ from utils import WHITE, BLACK
 
 class Piece():
 
-	def __init__(self, rank, color):
+	def set_color(self, color):
 		assert color in [BLACK, WHITE], "%s is not a color." % color
-		self.rank = rank
 		self.color = color
-
-	@staticmethod
-	def King(color):
-		return Piece("K", color)
-
-	@staticmethod
-	def Queen(color):
-		return Piece("Q", color)
-
-	@staticmethod
-	def Bishop(color):
-		return Piece("B", color)
-
-	@staticmethod
-	def Knight(color):
-		return Piece("N", color)
-
-	@staticmethod
-	def Rook(color):
-		return Piece("R", color)
-
-	@staticmethod
-	def Pawn(color):
-		return Piece("P", color)
 
 	def __str__(self):
 		if self.color == WHITE:
 			return "w" + self.rank
 		else:
 			return "b" + self.rank
+
+class King(Piece):
+	def __init__(self, color):
+		self.set_color(color)
+		self.rank = "K"
+
+class Queen(Piece):
+	def __init__(self, color):
+		self.set_color(color)
+		self.rank = "Q"
+
+class Bishop(Piece):
+	def __init__(self, color):
+		self.set_color(color)
+		self.rank = "B"
+
+class Knight(Piece):
+	def __init__(self, color):
+		self.set_color(color)
+		self.rank = "N"
+
+class Rook(Piece):
+	def __init__(self, color):
+		self.set_color(color)
+		self.rank = "R"
+
+class Pawn(Piece):
+	def __init__(self, color):
+		self.set_color(color)
+		self.rank = "P"
