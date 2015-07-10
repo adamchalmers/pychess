@@ -183,8 +183,8 @@ function drawCell(i, j, text, color, leaveHighlight) {
   }
   if (leaveHighlight) {
     ctx.fillRect(
-        OFFSET + CANVAS_SCALE * (HL_SIZE + i*TILE_SIZE), 
-        OFFSET + CANVAS_SCALE * (HL_SIZE + j*TILE_SIZE), 
+        CANVAS_SCALE * (OFFSET + HL_SIZE + i*TILE_SIZE), 
+        CANVAS_SCALE * (OFFSET + HL_SIZE + j*TILE_SIZE), 
         CANVAS_SCALE * (TILE_SIZE - 2*HL_SIZE), 
         CANVAS_SCALE * (TILE_SIZE - 2*HL_SIZE)
     );
@@ -216,10 +216,10 @@ function drawCell(i, j, text, color, leaveHighlight) {
 function highlightCell(i, j) {
     ctx.fillStyle = "orange";
     ctx.fillRect(
-        OFFSET + i*TILE_SIZE, 
-        OFFSET + j*TILE_SIZE, 
-        TILE_SIZE, 
-        TILE_SIZE
+        CANVAS_SCALE * (OFFSET + i*TILE_SIZE), 
+        CANVAS_SCALE * (OFFSET + j*TILE_SIZE), 
+        CANVAS_SCALE * (TILE_SIZE), 
+        CANVAS_SCALE * (TILE_SIZE)
     );
     drawCell(i, j, board[i][j].substring(1), board[i][j].substring(0,1) == "w", true);
 }
