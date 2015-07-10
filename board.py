@@ -10,7 +10,7 @@ class Board(object):
 		self._pieces.add(Rook(WHITE, 7, 0))
 		self._pieces.add(Rook(WHITE, 7, 7))
 		self._pieces.add(Rook(BLACK, 0, 0))
-		self._pieces.add(Rook(BLACK, 0, 0))
+		self._pieces.add(Rook(BLACK, 0, 7))
 		self._pieces.add(Knight(WHITE, 7, 1))
 		self._pieces.add(Knight(WHITE, 7, 6))
 		self._pieces.add(Knight(BLACK, 0, 1))
