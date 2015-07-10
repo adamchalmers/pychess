@@ -10,12 +10,12 @@ class Move():
     self.y1 = y1
     self.x2 = x2
     self.y2 = y2
-    self.piece = str(game.board[x1][y1])
+    self.piece = str(game.board.at(x1, y1))
 
   def validate(self, game):
     try:
       core_val(self, game)
-      rank = game.board[self.x1][self.y1].char
+      rank = game.board.at(self.x1, self.y1).char
 
       RANK_VAL[rank](self, game)
 
@@ -31,15 +31,15 @@ def core_val(m, game):
     assert i >= 0 and i < 8, "Invalid coordinate (%s)." % i
   assert game.turn == m.player, "It's not your turn."
   assert m.player in [BLACK, WHITE], "Invalid player."
-  src = game.board[m.x1][m.y1]
-  dst = game.board[m.x2][m.y2]
+  src = game.board.at(m.x1, m.y1)
+  dst = game.board.at(m.x2, m.y2)
   assert dst is None or dst.color != m.player, "You can't move a piece onto another of your pieces."
   assert src is not None, "The square you're trying to move doesn't have a piece."
   assert src.color == m.player, "You can't move the opponent's pieces."
 
 def pawn_val(m, game):
-  src = game.board[m.x1][m.y1]
-  dst = game.board[m.x2][m.y2]
+  src = game.board.at(m.x1, m.y1)
+  dst = game.board.at(m.x2, m.y2)
   xdist = abs(m.x1-m.x2)
   ydist = m.y2-m.y1
 
@@ -98,7 +98,8 @@ def king_val(m, game):
   # Kings can't move next to other kings
   for i in range(m.x2-1, m.x2+2):
     for j in range(m.y2-1, m.y2+2):
-      if game.board[i][j] is not None and game.board[i][j].rank == "K" and game.board[i][j].color != m.player:
+      target = game.board.at(i,j)
+      if target is not None and target.rank == "K":
         raise MoveException("A king can't move next to another king.")
 
 def bishop_val(m, game):
@@ -142,7 +143,7 @@ def path_clear(m, game, dx, dy):
   while x < 8 and y < 8 and x >= 0 and y >= 0:
     if m.x2 == x and m.y2 == y:
       return
-    if game.board[x][y] is not None:
+    if game.board.at(x,y) is not None:
       raise MoveException("There's a piece in your way.")
     x += dx
     y += dy

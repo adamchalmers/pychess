@@ -1,6 +1,6 @@
 from piece import Piece
 from utils import *
-import make_board
+from board import Board
 import threading
 import move
 
@@ -12,7 +12,7 @@ class Game():
 		assert color in [WHITE, BLACK], "Invalid player"
 		self.auth = {color: pw}
 		self.moves = []
-		self.board = make_board.make_board()
+		self.board = Board()
 		self.turn = WHITE
 		self.lock = threading.Lock()
 
@@ -36,13 +36,14 @@ class Game():
 
 	def pretty_no_borders(self):
 		out = self.game_id
+		all_pieces = self.board.all_pieces()
 		if self.turn == WHITE:
 			out += " (white)\n"
 		else:
 			out += " (black)\n"
 		for i in range(8):
 			for j in range(8):
-				out += str(self.board[j][i]) + " "
+				out += str(all_pieces[j][i]) + " "
 			out = out[:-1] + "\n"
 		out = out.replace("None", "..")
 		return out
@@ -56,11 +57,10 @@ class Game():
 		self.auth[color] = pw
 
 	def move(self, move):
-		move.validate(self)	
-		self.board[move.x2][move.y2] = self.board[move.x1][move.y1]
-		self.board[move.x2][move.y2].x = move.x2
-		self.board[move.x2][move.y2].y = move.y2
-		self.board[move.x1][move.y1] = None
+		"""Executes the move encoded in a Move object on the current game."""
+		move.validate(self)
+		print str(move)
+		self.board.move(move.x1, move.y1, move.x2, move.y2)
 		self.turn = not self.turn
 		self.moves.append(move)
 
@@ -77,7 +77,7 @@ class Game():
 	@property
 	def serialize_board(self):
 		out = ""
-		for row in self.board:
+		for row in self.board.all_pieces():
 			for piece in row:
 				if piece is None:
 					out += ".."
