@@ -3,6 +3,9 @@ from flask import jsonify
 class ChessException(Exception):
     pass
 
+class MoveException(ChessException):
+  pass
+
 WHITE = True
 BLACK = False
 
