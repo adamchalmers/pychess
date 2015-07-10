@@ -40,8 +40,10 @@ class Game():
 			out += " (white)\n"
 		else:
 			out += " (black)\n"
-		for row in self.board:
-			out += " ".join([str(piece) for piece in row]) + "\n"
+		for i in range(8):
+			for j in range(8):
+				out += str(self.board[j][i]) + " "
+			out = out[:-1] + "\n"
 		out = out.replace("None", "..")
 		return out
 
