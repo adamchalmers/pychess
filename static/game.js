@@ -149,8 +149,8 @@ function getBoard() {
  * If new moves have occurred, update and redraw the board.
  */
 function updateBoard(state) {
-    if (state.moves.length > now) {
-        now = state.moves.length;
+    if (state.time > now) {
+        now = state.time;
 
         turn = state.turn;
         $(".turn").text(state.turn);

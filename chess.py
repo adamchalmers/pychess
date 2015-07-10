@@ -11,10 +11,10 @@ class Game():
 		self.game_id = game_id
 		assert color in [WHITE, BLACK], "Invalid player"
 		self.auth = {color: pw}
-		self.moves = []
 		self.board = Board()
 		self.turn = WHITE
 		self.lock = threading.Lock()
+		self.turns = 0
 
 	def pretty(self):
 		src = self.pretty_no_borders()
@@ -62,16 +62,12 @@ class Game():
 		print str(move)
 		self.board.move(move.x1, move.y1, move.x2, move.y2)
 		self.turn = not self.turn
-		self.moves.append(move)
-
-	@property
-	def time(self):
-		return len(self.moves)
+		self.turns += 1
 
 	def serialize(self):
 		return {"board": self.serialize_board, 
 				"turn": color_to_str(self.turn),
-				"moves": [str(m) for m in self.moves]
+				"time": self.turns
 			}
 
 	@property
