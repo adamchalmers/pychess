@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-from chess import Game
-from move import Move, MoveException
-from utils import *
+#from chess.chess import Game
+#from chess.move import Move, MoveException
+#from chess.utils import *
+from chess import *
 import logging
 app = Flask(__name__)
 games = {"adam1": Game(WHITE, "pw", "adam1")}
@@ -56,7 +57,7 @@ def move(game_id, player, x1, y1, x2, y2):
 		games[game_id].move(move)
 	except MoveException as e:
 		return json_error(str(e))
-		
+
 	return state(game_id)
 
 
