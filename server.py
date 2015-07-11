@@ -1,7 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-#from chess.chess import Game
-#from chess.move import Move, MoveException
-#from chess.utils import *
 from chess import *
 import logging
 app = Flask(__name__)

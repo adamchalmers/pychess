@@ -1,6 +1,4 @@
-from utils import *
-from chess import Game
-from move import Move, MoveException
+from chess import *
 
 def start_repl():
 	game_id = raw_input("Please enter a game_id:\n")
