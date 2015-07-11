@@ -58,9 +58,9 @@ class Game():
 
 	def move(self, move):
 		"""Executes the move encoded in a Move object on the current game."""
-		move.validate(self)
+		move.validate()
 		print str(move)
-		self.board.move(move.x1, move.y1, move.x2, move.y2)
+		self.board.move(move.piece, move.x, move.y)
 		self.turn = not self.turn
 		self.turns += 1
 

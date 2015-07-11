@@ -42,13 +42,12 @@ class Board(object):
 			board[piece.x][piece.y] = piece
 		return board
 
-	def move(self, x1, y1, x2, y2):
+	def move(self, piece, x, y):
 		"""Moves the piece to x, y, removing any piece previously there."""
-		piece = self.at(x1, y1)
 		assert piece is not None
-		if self.at(x2, y2) is not None:
-			self._pieces.remove(self.at(x2,y2))
-		assert self.at(x2,y2) is None
-		piece.x = x2
-		piece.y = y2
+		if self.at(x, y) is not None:
+			self._pieces.remove(self.at(x,y))
+		assert self.at(x,y) is None
+		piece.x = x
+		piece.y = y
 
