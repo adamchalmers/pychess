@@ -95,21 +95,38 @@ function canvasClick(x, y) {
         j = squareSelected[1];
         // If you click a square which isn't occupied by your piece, try moving there.
         if (board[x][y].substring(0,1) != turn.substring(0,1)) {
-            url = ["/move", game_id, turn, i, j, x, y].join("/");
-            console.log(url);
-            $.get(url, function(data) {
-                if (!data.error) {
-                    getBoard();
-                    $(".error").text("");
-                } else {
-                    $(".error").text(data.error);
-                }
-            });
-            return;
+            postMove(i, j, x, y);
         }
         drawCell(i, j, board[i][j].substring(1), board[i][j].substring(0,1) == "w");
         squareSelected = null;
     }
+}
+
+/*
+ * Asynchronously send a move order to the server.
+ * If the server's move validation works, update the board and change turns.
+ * Else, show the user rule violation.
+ */
+function postMove(i, j, x, y) {
+
+    // Board is flipped for black players; unflip it.
+    if (isBlack()) {
+        i = 7-i;
+        j = 7-j;
+        x = 7-x;
+        y = 7-y;
+    }
+    url = ["/move", game_id, turn, i, j, x, y].join("/");
+    console.log(url);
+    $.get(url, function(data) {
+        if (!data.error) {
+            getBoard();
+            $(".error").text("");
+        } else {
+            $(".error").text(data.error);
+        }
+    });
+    return;
 }
 
 /* 
@@ -121,21 +138,28 @@ function canvasClick(x, y) {
 function unpackBoard(string) {
     string = string.split("")
     board = []
-    newBoard = [];
     for (var i = 0; i < 8; i++) {
         board.push([]);
-        newBoard.push([]);
         for (var j = 0; j < 16; j+=2) {
             board[i].push(string[i*16+j] + string[i*16+j+1])
         }
     }
+    if (!isBlack()) {
+        return board;
+    }
+
+    /*
+     * If player is playing black, rotate the board 180 degrees.
+     */
+    newBoard = [];
     for (var i = 0; i < 8; i++) {
+        newBoard.push([]);
         for (var j = 0; j < 8; j++) {
-            newBoard[i][j] = board[j][i];
+            newBoard[i][j] = board[7-i][7-j];
         }
     }
     // return newBoard;
-    return board;
+    return newBoard;
 }
 
 /*
@@ -163,6 +187,6 @@ function updateBoard(state) {
     }
 }
 
-function orient(i) {
-    return player == "white" ? i : 7-i;
+function isBlack() {
+    return player == "black";
 }
