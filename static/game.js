@@ -1,14 +1,19 @@
 
+// How many milliseconds the client waits before checking game state
 REFRESH_RATE = 3 * 1000;
+// Canvas 2d context
 ctx = undefined;
+// String containing game ID
 game_id = $("#game_id").val();
+// Board object containing the game state
 board = undefined;
+// Logical time of the game
 now = -1;
-// Will be 'white' or 'black'
-turn = undefined;
+// Pair of numbers representing the cell the player's clicked on
 squareSelected = null;
+// Strings, either 'white' or 'black'
+turn = undefined;
 player = undefined;
-
 
 $(document).ready(function() {
     ctx = $("#chessBoard")[0].getContext("2d");
@@ -156,4 +161,8 @@ function updateBoard(state) {
         drawBoard(board);
         $("#game").show();
     }
+}
+
+function orient(i) {
+    return player == "white" ? i : 7-i;
 }
