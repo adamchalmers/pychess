@@ -43,13 +43,13 @@ function drawCell(i, j, text, color, leaveHighlight) {
   if (text != ".") {
     ctx.font = "" + 24*CANVAS_SCALE + "px serif ";
     if (color) {
-        ctx.fillStyle = "#840";
+        ctx.fillStyle = "#F60";
     } else {
-        ctx.fillStyle = "#048";
+        ctx.fillStyle = "#06F";
     }
     ctx.fillText(
         text, 
-        CANVAS_SCALE*(OFFSET + i*TILE_SIZE + 10), 
+        CANVAS_SCALE*(OFFSET + i*TILE_SIZE + 15), 
         CANVAS_SCALE*(4*OFFSET + j*TILE_SIZE)
     );
   }
