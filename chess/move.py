@@ -15,9 +15,9 @@ class Move():
 
       # Validate piece-specific rules
       if self.game.board.at(self.x, self.y) is None:
-        self.piece.can_move(self.game, self.x, self.y)
+        self.piece.can_move(self.game.board, self.x, self.y)
       else:
-        self.piece.can_attack(self.game, self.x, self.y)
+        self.piece.can_attack(self.game.board, self.x, self.y)
 
     except AssertionError as e:
       raise MoveException(str(e))
