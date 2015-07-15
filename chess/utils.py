@@ -29,3 +29,16 @@ def json_error(msg):
 def json_data(data):
     return jsonify(error="", data=data)
 
+
+def path_clear(piece, game, dx, dy, dst_x, dst_y):
+  """Checks if the path from m's start to m's end is clear."""
+  x = piece.x + dx
+  y = piece.y + dy
+  while x < 8 and y < 8 and x >= 0 and y >= 0:
+    if dst_x == x and dst_y == y:
+      return
+    if game.board.at(x,y) is not None:
+      raise MoveException("There's a piece in your way.")
+    x += dx
+    y += dy
+  raise MoveException("You can't reach that point.")
