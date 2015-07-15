@@ -81,7 +81,7 @@ class Game():
 					out += str(piece)
 		return out
 
-def test_small():
+def test_auth():
 	g = Game(WHITE, "adampw", "adamgame")
 	print g.pretty()
 	assert g.check_auth(WHITE, "adampw")
@@ -94,6 +94,20 @@ def test_small():
 		g.add_player(BLACK, "black 2nd pw")
 	except AssertionError:
 		pass
+
+def test_game_small():
+	g = Game(WHITE, "pw", "game1")
+	g.add_player(BLACK, "pw")
+	m1 = move.Move(0, 6, 0, 4, WHITE, g)
+	g.move(m1)
+	m2 = move.Move(1, 1, 1, 3, BLACK, g)
+	g.move(m2)
+	m3 = move.Move(5, 6, 5, 5, WHITE, g)
+	g.move(m3)
+	m4 = move.Move(1, 3, 0, 4, BLACK, g)
+	g.move(m4)
+	m5 = move.Move(0, 7, 0, 4, WHITE, g)
+	g.move(m5)
 
 if __name__ == "__main__":
 	test_small()
