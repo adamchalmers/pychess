@@ -29,7 +29,6 @@ class Board(object):
 
 	def at(self, x, y):
 		"""Returns the piece at the given location on the board."""
-		print x, y
 		for piece in self._pieces:
 			if piece.x == x and piece.y == y:
 				return piece
@@ -51,3 +50,41 @@ class Board(object):
 		piece.x = x
 		piece.y = y
 
+	def checked(self, player):
+		"""Returns True iff given player is currently checked."""
+		# Find the player's king
+		for p in self._pieces:
+			if p.char == "K" and p.color == player:
+				king = p
+				break
+		assert king is not None
+		for p in self._pieces:
+			if p.color != player:
+				try:
+					p.can_attack(self, king.x, king.y)
+					return True
+				except MoveException:
+					pass
+		return False
+
+def test_check_small():
+	board = Board()
+	king = King(BLACK, 0, 0)
+	rook = Rook(WHITE, 2, 2)
+	board._pieces = {king, rook}
+	assert not board.checked(BLACK)
+	board.move(rook, 2, 0)
+	assert board.checked(BLACK)
+
+def test_check_medium():
+	board = Board()
+	king = King(BLACK, 0, 0)
+	rook = Rook(WHITE, 2, 2)
+	pawn = Pawn(WHITE, 7, 3)
+	bishop = Bishop(WHITE, 1, 3)
+	enemy_king = King(WHITE, 6, 6)
+	board._pieces = {king, rook, pawn, bishop, enemy_king}
+	assert not board.checked(BLACK)
+	board.move(rook, 2, 0)
+	assert board.checked(BLACK)
+	assert not board.checked(WHITE)
