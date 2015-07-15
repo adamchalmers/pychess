@@ -19,6 +19,11 @@ class Move():
       else:
         self.piece.can_attack(self.game.board, self.x, self.y)
 
+      # Validate that the move won't leave the player in check.
+      future = self.game.board.copy()
+      future.move(future.at(self.piece.x, self.piece.y), self.x, self.y)
+      assert not future.checked(self.player), "This move would leave you in check."
+
     except AssertionError as e:
       raise MoveException(str(e))
 
@@ -26,7 +31,7 @@ class Move():
     return self._str
 
   def _general_validation(self):
-    # Basic rules of chess
+    """Generic moves of chess. Raises exceptions if move is illegal."""
     for i in [self.piece.x, self.piece.y, self.x, self.y]:
       assert i >= 0 and i < 8, "Invalid coordinate (%s)." % i
     assert self.game.turn == self.player, "It's not your turn."

@@ -20,6 +20,10 @@ class Piece(object):
 		"""Default behaviour just calls can_move. Should be overridden for pawns."""
 		return self.can_move(board, x, y)
 
+	def copy(self):
+		t = type(self)
+		return t(self.color, self.x, self.y)
+
 	def __str__(self):
 		if self.color == WHITE:
 			return "w" + self.char
@@ -45,7 +49,7 @@ class King(Piece):
 	  for i in range(x-1, x+2):
 	    for j in range(y-1, y+2):
 	      target = board.at(i,j)
-	      if target is not None and target.rank == "K":
+	      if target is not None and target is not self and target.char == "K":
 	        raise MoveException("A king can't move next to another king.")
 
 
@@ -155,3 +159,11 @@ class Pawn(Piece):
 	  ydist = y-self.y
 	  if xdist != 1 or abs(ydist) != 1:
 			raise MoveException("Pawns can only capture pieces diagonally in front of them.")
+
+def test_copy():
+	king1 = King(WHITE, 0, 0)
+	king2 = king1.copy()
+	assert king1 is not king2
+	assert king1.x == king2.x
+	assert king1.y == king2.y
+	assert king1.char == king2.char

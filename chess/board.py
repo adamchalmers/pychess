@@ -19,8 +19,8 @@ class Board(object):
 		self._pieces.add(Bishop(WHITE, 7, 5))
 		self._pieces.add(Bishop(BLACK, 0, 2))
 		self._pieces.add(Bishop(BLACK, 0, 5))
-		self._pieces.add(Queen(WHITE, 7, 3))
-		self._pieces.add(King(WHITE, 7, 4))
+		self._pieces.add(Queen(WHITE, 7, 4))
+		self._pieces.add(King(WHITE, 7, 3))
 		self._pieces.add(Queen(BLACK, 0, 4))
 		self._pieces.add(King(BLACK, 0, 3))
 
@@ -49,6 +49,11 @@ class Board(object):
 		assert self.at(x,y) is None
 		piece.x = x
 		piece.y = y
+
+	def copy(self):
+		new = Board()
+		new._pieces = {p.copy() for p in self._pieces}
+		return new
 
 	def checked(self, player):
 		"""Returns True iff given player is currently checked."""
@@ -88,3 +93,14 @@ def test_check_medium():
 	board.move(rook, 2, 0)
 	assert board.checked(BLACK)
 	assert not board.checked(WHITE)
+
+def test_copy():
+	board = Board()
+	king = King(BLACK, 0, 0)
+	rook = Rook(WHITE, 2, 2)
+	board._pieces = {king, rook}
+	clone = board.copy()
+	assert len(clone._pieces) == len(board._pieces)
+	for piece in clone._pieces:
+		assert piece not in board._pieces
+
