@@ -68,9 +68,14 @@ class Game():
 			if result == piece.CASTLING:
 				x1, y1, x2, y2 = outcome[1:]
 				rook = move.game.board.at(x1,y1)
-				assert rook.char == "R"
+				assert type(rook) == piece.Rook
 				rook.x = x2
 				rook.y = y2
+			elif result == piece.EN_PASSANTING:
+				tx, ty = outcome[1:]
+				pawn = move.game.board.at(tx, ty)
+				assert type(pawn) == piece.Pawn
+				move.game.board._pieces.remove(pawn)
 			else:
 				raise Exception("Unexpected special result %s" % str(outcome))
 

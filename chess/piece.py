@@ -1,6 +1,7 @@
 from utils import WHITE, BLACK, path_clear, MoveException
 
 CASTLING = "CASTLING"
+EN_PASSANTING = "EN_PASSANTING"
 
 class Piece(object):
 
@@ -149,6 +150,15 @@ class Rook(Piece):
 class Pawn(Piece):
 	def __init__(self, color, x, y):
 		super(Pawn, self).__init__(color, x, y, "P")
+		self.en_passantable = False
+		self.jumped = False
+
+	def after_move(self):
+		if self.jumped:
+			self.jumped = False
+			self.en_passantable = True
+		else:
+			self.en_passantable = False
 
 	def can_move(self, board, x, y):
 
@@ -166,11 +176,18 @@ class Pawn(Piece):
 	    # You can move forward 2 squares from your starting row
 	    if abs(ydist) == 2:
 	      if (self.color == BLACK and self.y == 1) or (self.color == WHITE and self.y == 6):
+	      	self.jumped = True
 	        return
 	    # Otherwise you can move forward one square
 	    elif abs(ydist) == 1:
 	      return
 
+	  # Check en passant
+	  if abs(xdist) == 1:
+	  	target = board.at(self.x+xdist, self.y)
+	  	if (ydist == 1 and self.color == BLACK and type(target) == Pawn and target.en_passantable) or (
+	  		ydist == -1 and self.color == WHITE and type(target) == Pawn and target.en_passantable):
+	  		return EN_PASSANTING, self.x+xdist, self.y
 	  raise MoveException("Pawns can only move 1 square forward (or 2 from their starting position).")
 
 	def can_attack(self, board, x, y):

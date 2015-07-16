@@ -60,6 +60,17 @@ def test_validation_pawn():
   with assert_raises(MoveException): g.move(Move(6,4,6,2, WHITE, g))
   g.move(Move(6,4,6,3, WHITE, g))
 
+def test_en_passant():
+  g = Game(WHITE, "pw", "game1")
+  assert not g.board.at(3,6).en_passantable
+  g.move(Move(3,6,3,4, WHITE, g))
+  assert g.board.at(3,4).en_passantable
+  g.move(Move(7,1,7,2, BLACK, g))
+  g.move(Move(3,4,3,3, WHITE, g))
+  g.move(Move(4,1,4,3, BLACK, g))
+  assert g.board.at(4,3).en_passantable
+  g.move(Move(3,3,4,2, WHITE, g))
+
 def test_validation_bishop():
   g = Game(WHITE, "pw", "game1")
   wb = g.board.at(5, 7)
