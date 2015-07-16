@@ -117,7 +117,12 @@ function postMove(i, j, x, y, rank_char) {
     }
     var details = "?";
     if (rank_char == "P" && ((isBlack() && y == 7) || (!isBlack() && y === 0))) {
-        details += "promo=Q";
+        letter = "";
+        while (["Q", "R", "B", "N"].indexOf(letter) == -1) {
+            letter = prompt("Which piece would you like your pawn to become? (Q/R/B/N)");
+            letter = letter.toUpperCase();
+        }
+        details += "promo=" + letter;
     }
     url = ["/move", game_id, turn, i, j, x, y].join("/") + details;
     console.log(url);
