@@ -2,12 +2,14 @@ from utils import *
 import piece
 
 class Move():
-  def __init__(self, srcx, srcy, dstx, dsty, player, game):
+  def __init__(self, srcx, srcy, dstx, dsty, player, game, promo=None):
     self.player = player
     self.piece = game.board.at(srcx, srcy)
     self.x = dstx
     self.y = dsty
     self.game = game
+    # Should be in (Q,N,B,R) and is the piece created if this move involves promotion
+    self.promo = promo
     self._str = "%s at (%s,%s) to (%s,%s)" % (str(self.piece), srcx, srcy, dstx, dsty)
 
   def validate(self):

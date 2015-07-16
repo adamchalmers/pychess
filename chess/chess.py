@@ -65,17 +65,32 @@ class Game():
     if outcome is not None:
       result = outcome[0]
       print outcome
+
       if result == piece.CASTLING:
         x1, y1, x2, y2 = outcome[1:]
         rook = move.game.board.at(x1,y1)
         assert type(rook) == piece.Rook
         rook.x = x2
         rook.y = y2
+
       elif result == piece.EN_PASSANTING:
         tx, ty = outcome[1:]
         pawn = move.game.board.at(tx, ty)
         assert type(pawn) == piece.Pawn
         move.game.board._pieces.remove(pawn)
+
+      elif result == piece.PROMOTING:
+        self.board._pieces.remove(move.piece)
+        args = move.player, move.piece.x, move.piece.y
+        new_piece = {
+          "Q": piece.Queen(*args),
+          "B": piece.Bishop(*args),
+          "R": piece.Rook(*args),
+          "N": piece.Knight(*args),
+        }[move.promo]
+        self.board._pieces.add(new_piece)
+        move.piece = new_piece
+        
       else:
         raise Exception("Unexpected special result %s" % str(outcome))
 

@@ -71,6 +71,22 @@ def test_en_passant():
   assert g.board.at(4,3).en_passantable
   g.move(Move(3,3,4,2, WHITE, g))
 
+def test_promotion():
+  g = Game(WHITE, "pw", "game1")
+  g.board._pieces = {
+    piece.Pawn(WHITE, 0, 1), 
+    piece.Pawn(BLACK, 0, 6),
+    piece.King(WHITE, 7, 7),
+    piece.King(BLACK, 4, 4),
+  }
+  # Move each pawn to the final row, check they've become other pieces
+  g.move(Move(0,1,0,0, WHITE, g, promo="R"))
+  assert_equal(type(g.board.at(0,0)), piece.Rook)
+  g.move(Move(0,6,0,7, BLACK, g, promo="N"))
+  assert_equal(type(g.board.at(0,7)), piece.Knight)
+  # There should be no pawns left
+  assert_equal({p for p in g.board._pieces if type(p) == piece.Pawn}, set())
+
 def test_validation_bishop():
   g = Game(WHITE, "pw", "game1")
   wb = g.board.at(5, 7)

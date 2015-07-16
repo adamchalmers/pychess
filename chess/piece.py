@@ -2,6 +2,7 @@ from utils import WHITE, BLACK, path_clear, MoveException
 
 CASTLING = "CASTLING"
 EN_PASSANTING = "EN_PASSANTING"
+PROMOTING = "PROMOTING"
 
 class Piece(object):
 
@@ -180,6 +181,8 @@ class Pawn(Piece):
           return
       # Otherwise you can move forward one square
       elif abs(ydist) == 1:
+        if (self.color == WHITE and y == 0) or (self.color == BLACK and y == 7):
+          return PROMOTING, 
         return
 
     # Check en passant
