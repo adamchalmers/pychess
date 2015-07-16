@@ -10,3 +10,10 @@ PyChess is a simple chess client I designed to practice web apps. The goals were
 Not all of these goals have been completed yet :P
 
 To run, just execute ```python server.py```. 
+
+TODO:
+
+ * Castling
+ * En passant
+ * Promotion
+ * Checkmate/stalemate
