@@ -95,7 +95,7 @@ function canvasClick(x, y) {
         j = squareSelected[1];
         // If you click a square which isn't occupied by your piece, try moving there.
         if (board[x][y].substring(0,1) != turn.substring(0,1)) {
-            postMove(i, j, x, y);
+            postMove(i, j, x, y, board[i][j].substring(1));
         }
         drawCell(i, j, board[i][j].substring(1), board[i][j].substring(0,1) == "w");
         squareSelected = null;
@@ -107,8 +107,7 @@ function canvasClick(x, y) {
  * If the server's move validation works, update the board and change turns.
  * Else, show the user rule violation.
  */
-function postMove(i, j, x, y) {
-
+function postMove(i, j, x, y, rank_char) {
     // Board is flipped for black players; unflip it.
     if (isBlack()) {
         i = 7-i;
@@ -116,7 +115,11 @@ function postMove(i, j, x, y) {
         x = 7-x;
         y = 7-y;
     }
-    url = ["/move", game_id, turn, i, j, x, y].join("/");
+    var details = "?";
+    if (rank_char == "P" && ((isBlack() && y == 7) || (!isBlack() && y === 0))) {
+        details += "promo=Q";
+    }
+    url = ["/move", game_id, turn, i, j, x, y].join("/") + details;
     console.log(url);
     $.get(url, function(data) {
         if (!data.error) {

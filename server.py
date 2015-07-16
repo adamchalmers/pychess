@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, request
 from chess import *
 import logging
 app = Flask(__name__)
@@ -45,12 +45,21 @@ def state(game_id):
 def move(game_id, player, x1, y1, x2, y2):
   """Receives and validates a move from the user."""
 
+  # Make the query string into a k/v dictionary.
+  query = {}
+  try:
+    for kv in request.url[request.url.find("?")+1:].split("&"):
+      k, v = kv.split("=")
+      query[k] = v
+  except ValueError:
+    pass
+
   if game_id not in games:
     return json_error("No such game!")
 
   player = str_to_color(player)
   try:
-    move = Move(x1, y1, x2, y2, player, games[game_id])
+    move = Move(x1, y1, x2, y2, player, games[game_id], promo=query.get("promo"))
     games[game_id].move(move)
   except MoveException as e:
     return json_error(str(e))

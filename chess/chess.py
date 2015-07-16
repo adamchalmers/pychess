@@ -80,14 +80,16 @@ class Game():
         move.game.board._pieces.remove(pawn)
 
       elif result == piece.PROMOTING:
-        self.board._pieces.remove(move.piece)
         args = move.player, move.piece.x, move.piece.y
         new_piece = {
           "Q": piece.Queen(*args),
           "B": piece.Bishop(*args),
           "R": piece.Rook(*args),
           "N": piece.Knight(*args),
-        }[move.promo]
+        }.get(move.promo)
+        if new_piece is None:
+          raise MoveException("You didn't choose a new piece to promote your pawn to!")
+        self.board._pieces.remove(move.piece)
         self.board._pieces.add(new_piece)
         move.piece = new_piece
         
