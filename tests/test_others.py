@@ -1,6 +1,8 @@
 from chess import *
 from chess.piece import King
+
 def test_copy():
+  """Test piece copying."""
   king1 = King(WHITE, 0, 0)
   king2 = king1.copy()
   assert king1 is not king2
