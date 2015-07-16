@@ -20,6 +20,11 @@ class Piece(object):
 		"""Default behaviour just calls can_move. Should be overridden for pawns."""
 		return self.can_move(board, x, y)
 
+	def after_move(self):
+		"""Called after the piece has moved. Default implementation is no-op.
+		Override for pieces which care about having moved, like king/pawn."""
+		return
+
 	def copy(self):
 		t = type(self)
 		return t(self.color, self.x, self.y)
@@ -35,6 +40,10 @@ class King(Piece):
 
 	def __init__(self, color, x, y):
 		super(King, self).__init__(color, x, y, "K")
+		self.has_moved = False # If true, can't castle.
+
+	def after_move(self):
+		self.has_moved = True
 
 	def can_move(self, board, x, y):
 	  xdist = x-self.x
