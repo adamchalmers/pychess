@@ -32,11 +32,11 @@ class Move():
 
   def _general_validation(self):
     """Generic moves of chess. Raises exceptions if move is illegal."""
+    assert self.piece is not None, "There's no piece at this square."
     for i in [self.piece.x, self.piece.y, self.x, self.y]:
       assert i >= 0 and i < 8, "Invalid coordinate (%s)." % i
     assert self.game.turn == self.player, "It's not your turn."
     assert self.player in [BLACK, WHITE], "Invalid player."
     dst = self.game.board.at(self.x, self.y)
     assert dst is None or dst.color != self.player, "You can't move a piece onto another of your pieces."
-    assert self.piece is not None, "The square you're trying to move doesn't have a piece."
     assert self.piece.color == self.player, "You can't move the opponent's pieces."
