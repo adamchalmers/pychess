@@ -18,7 +18,7 @@ function drawBoard(board) {
 
 function drawCell(i, j, text, color, leaveHighlight) {
   // Draw the board cell
-  if ((i*8 + j + i%2)%2==0) {
+  if ((i*8 + j + i%2)%2===0) {
     ctx.fillStyle = "#fff";
   } else {
     ctx.fillStyle = "#000";

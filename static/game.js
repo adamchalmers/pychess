@@ -43,7 +43,7 @@ function authenticateUser() {
             if (!data.error || data.error=="NEWAUTH") {
 
                 if (data.error=="NEWAUTH") {
-                    alert("Welcome to the game.")
+                    alert("Welcome to the game.");
                 }
                 $(".error").text("");
                 $("#welcome").hide();
@@ -136,12 +136,12 @@ function postMove(i, j, x, y) {
  * A black king is 'bK'
  */
 function unpackBoard(string) {
-    string = string.split("")
-    board = []
+    string = string.split("");
+    board = [];
     for (var i = 0; i < 8; i++) {
         board.push([]);
         for (var j = 0; j < 16; j+=2) {
-            board[i].push(string[i*16+j] + string[i*16+j+1])
+            board[i].push(string[i*16+j] + string[i*16+j+1]);
         }
     }
     if (!isBlack()) {
