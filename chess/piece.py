@@ -96,7 +96,7 @@ class Bishop(Piece):
 	  if (abs(xdist) != abs(ydist)):
 	    raise MoveException("Bishops must move diagonally.")
 
-	  path_clear(self, board, xdist/abs(xdist), ydist/abs(ydist), x, y)
+	  path_clear(self, board, x, y)
 
 
 class Knight(Piece):
@@ -105,7 +105,7 @@ class Knight(Piece):
 		super(Knight, self).__init__(color, x, y, "N")
 
 	def can_move(self, board, x, y):
-	  xdist = abs(self.x-x)
+	  xdist = abs(x-self.x)
 	  ydist = abs(y-self.y)
 	  if (xdist == 1 and ydist == 2) or (xdist == 2 and ydist == 1):
 	    return
@@ -124,10 +124,10 @@ class Rook(Piece):
 	    raise MoveException("Rooks can only move in a straight line left, right, up or down.")
 
 	  if xdist != 0:
-	    path_clear(self, board, xdist/abs(xdist), 0, x, y)
+	    path_clear(self, board, x, y)
 	    return
 	  else:
-	    path_clear(self, board, 0, ydist/abs(ydist), x, y)
+	    path_clear(self, board, x, y)
 	    return
 
 	  raise MoveException("Something very weird.")
@@ -140,7 +140,7 @@ class Pawn(Piece):
 	def can_move(self, board, x, y):
 
 	  dst = board.at(x, y)
-	  xdist = abs(self.x-x)
+	  xdist = x-self.x
 	  ydist = y-self.y
 
 	  # Check the player hasn't moved backwards
@@ -148,7 +148,7 @@ class Pawn(Piece):
 	    raise MoveException("You can't move pawns backwards.")
 
 	  # Moving directly forward (no capture)
-	  if xdist == 0 and dst == None:
+	  if abs(xdist) == 0 and dst == None:
 
 	    # You can move forward 2 squares from your starting row
 	    if abs(ydist) == 2:
@@ -164,9 +164,11 @@ class Pawn(Piece):
 	  # TODO: add en passant.
 	  # This and castling will require tagging the board state when moves are processed,
 	  # so you can look at tags like 'check' or 'en passant' or 'castleable' to see if an action is valid.
-	  xdist = abs(self.x-x)
+	  xdist = x-self.x
 	  ydist = y-self.y
-	  if xdist != 1 or abs(ydist) != 1:
+	  if (self.color == BLACK and ydist <= 0) or (self.color == WHITE and ydist >= 0):
+	    raise MoveException("You can't move pawns backwards.")
+	  if abs(xdist) != 1 or abs(ydist) != 1:
 			raise MoveException("Pawns can only capture pieces diagonally in front of them.")
 
 def test_copy():

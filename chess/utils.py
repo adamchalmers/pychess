@@ -30,8 +30,11 @@ def json_data(data):
     return jsonify(error="", data=data)
 
 
-def path_clear(piece, board, dx, dy, dst_x, dst_y):
-  """Checks if the path from m's start to m's end is clear."""
+def path_clear(piece, board, dst_x, dst_y):
+  """Returns False if there are any other pieces on the path between 
+     the given piece's location and (dst_x, dst_y)."""
+  dx = (dst_x-piece.x)/abs(dst_x-piece.x) if dst_x-piece.x != 0 else 0
+  dy = (dst_y-piece.y)/abs(dst_y-piece.y) if dst_y-piece.y != 0 else 0
   x = piece.x + dx
   y = piece.y + dy
   while x < 8 and y < 8 and x >= 0 and y >= 0:
