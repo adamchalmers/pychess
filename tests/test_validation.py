@@ -59,3 +59,31 @@ def test_validation_pawn():
   g.move(Move(1,3,1,4, BLACK, g))
   with assert_raises(MoveException): g.move(Move(6,4,6,2, WHITE, g))
   g.move(Move(6,4,6,3, WHITE, g))
+
+def test_validation_bishop():
+  g = Game(WHITE, "pw", "game1")
+  wb = g.board.at(5, 7)
+  assert wb.char == "B"
+  # Bishop can't move at the start
+  with assert_raises(MoveException): g.move(Move(5, 7, 4, 6, WHITE, g))
+  with assert_raises(MoveException): g.move(Move(5, 7, 4, 8, WHITE, g))
+  with assert_raises(MoveException): g.move(Move(5, 7, 6, 6, WHITE, g))
+  with assert_raises(MoveException): g.move(Move(5, 7, 6, 8, WHITE, g))
+  # Move the bishop along all four diagonals. 
+  g.move(Move(4,6,4,5, WHITE, g))
+  g.turn = WHITE
+  g.move(Move(5,7,2,4, WHITE, g))
+  g.turn = WHITE
+  g.move(Move(2,4,1,3, WHITE, g))
+  g.turn = WHITE
+  g.move(Move(1,3,0,4, WHITE, g))
+  g.turn = WHITE
+  g.move(Move(0,4,1,5, WHITE, g))
+  g.turn = WHITE
+  g.move(Move(1,5,2,4, WHITE, g))
+  # Can't move to 6,0
+  g.turn = WHITE
+  with assert_raises(MoveException): g.move(Move(2,4,6,0, WHITE, g))
+  # Can move to 5,1
+  g.move(Move(2,4,5,1, WHITE, g))
+
