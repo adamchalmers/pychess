@@ -1,4 +1,5 @@
 from utils import *
+import piece
 
 class Move():
   def __init__(self, srcx, srcy, dstx, dsty, player, game):
@@ -15,14 +16,16 @@ class Move():
 
       # Validate piece-specific rules
       if self.game.board.at(self.x, self.y) is None:
-        self.piece.can_move(self.game.board, self.x, self.y)
+        outcome = self.piece.can_move(self.game.board, self.x, self.y)
       else:
-        self.piece.can_attack(self.game.board, self.x, self.y)
+        outcome = self.piece.can_attack(self.game.board, self.x, self.y)
 
       # Validate that the move won't leave the player in check.
       future = self.game.board.copy()
       future.move(future.at(self.piece.x, self.piece.y), self.x, self.y)
       assert not future.checked(self.player), "This move would leave you in check."
+
+      return outcome
 
     except AssertionError as e:
       raise MoveException(str(e))

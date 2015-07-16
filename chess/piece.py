@@ -1,5 +1,7 @@
 from utils import WHITE, BLACK, path_clear, MoveException
 
+CASTLING = "CASTLING"
+
 class Piece(object):
 
 	def __init__(self, color, x, y, char):
@@ -13,7 +15,8 @@ class Piece(object):
 
 	def can_move(self, board, x, y):
 		"""Used to validate moves.
-		Throws an exception if the move would be invalid. Returns None otherwise."""
+		Throws an exception if the move would be invalid.
+		If the move is valid, it None or a string describing a special move outcome."""
 		raise NotImplementedError()
 
 	def can_attack(self, board, x, y):
@@ -50,6 +53,16 @@ class King(Piece):
 	  ydist = y-self.y
 
 	  # TODO: Add castling.
+	  castling = False
+	  if self.has_moved == False and ydist == 0:
+			if xdist == -2 and self.color == WHITE and board.at(0,7).char == "R":
+				return CASTLING, 0, 7, 2, 7
+			if xdist == -2 and self.color == BLACK and board.at(0,0).char == "R":
+				return CASTLING, 0, 0, 2, 0
+			if xdist == 3 and self.color == WHITE and board.at(7,7).char == "R":
+				return CASTLING, 7, 7, 5, 7
+			if xdist == 3 and self.color == BLACK and board.at(7,0).char == "R":
+				return CASTLING, 7, 0, 5, 0
 
 	  if abs(xdist) > 1 or abs(ydist) > 1:
 	    raise MoveException("Kings can only move one square away.")

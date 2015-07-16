@@ -1,4 +1,4 @@
-from piece import Piece
+import piece
 from utils import *
 from board import Board
 import threading
@@ -57,11 +57,27 @@ class Game():
 		self.auth[color] = pw
 
 	def move(self, move):
-		"""Executes the move encoded in a Move object on the current game."""
-		move.validate()
-		print str(move)
+		"""Executes the move encoded in a Move object on the current game.
+		   Raises MoveException if the move is illegal (fails validation)"""
+		outcome = move.validate()
+
+		# Handle special rules, like castling or promotion
+		if outcome is not None:
+			result = outcome[0]
+			print outcome
+			if result == piece.CASTLING:
+				x1, y1, x2, y2 = outcome[1:]
+				rook = move.game.board.at(x1,y1)
+				assert rook.char == "R"
+				rook.x = x2
+				rook.y = y2
+			else:
+				raise Exception("Unexpected special result %s" % str(outcome))
+
+		# Execute the move.
 		self.board.move(move.piece, move.x, move.y)
 		self.turn = not self.turn
+		move.piece.after_move()
 		self.turns += 1
 
 	def serialize(self):
