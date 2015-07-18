@@ -1,4 +1,4 @@
-from utils import WHITE, BLACK, path_clear, MoveException
+from utils import WHITE, BLACK, path_clear, IllegalMoveException
 import outcomes
 
 class Piece(object):
@@ -64,14 +64,14 @@ class King(Piece):
         return outcomes.CASTLING, 7, 0, 5, 0
 
     if abs(xdist) > 1 or abs(ydist) > 1:
-      raise MoveException("Kings can only move one square away.")
+      raise IllegalMoveException("Kings can only move one square away.")
 
     # Kings can't move next to other kings
     for i in range(x-1, x+2):
       for j in range(y-1, y+2):
         target = board.at(i,j)
         if target is not None and target is not self and target.char == "K":
-          raise MoveException("A king can't move next to another king.")
+          raise IllegalMoveException("A king can't move next to another king.")
 
 
 class Queen(Piece):
@@ -85,15 +85,15 @@ class Queen(Piece):
     try:
       Bishop(self.color, self.x, self.y).can_move(board, x, y)
       return
-    except MoveException:
+    except IllegalMoveException:
       pass
 
     # Return if it's a legal bishop move, otherwise error.
     try:
       Rook(self.color, self.x, self.y).can_move(board, x, y)
       return
-    except MoveException:
-      raise MoveException("Your queen can't move there. Queens can move like bishops or like rooks.")
+    except IllegalMoveException:
+      raise IllegalMoveException("Your queen can't move there. Queens can move like bishops or like rooks.")
 
 
 class Bishop(Piece):
@@ -106,7 +106,7 @@ class Bishop(Piece):
     ydist = y-self.y
 
     if (abs(xdist) != abs(ydist)):
-      raise MoveException("Bishops must move diagonally.")
+      raise IllegalMoveException("Bishops must move diagonally.")
 
     path_clear(self, board, x, y)
 
@@ -121,7 +121,7 @@ class Knight(Piece):
     ydist = abs(y-self.y)
     if (xdist == 1 and ydist == 2) or (xdist == 2 and ydist == 1):
       return
-    raise MoveException("Knights must move 2 squares in one direction and 1 square in the other direction.")
+    raise IllegalMoveException("Knights must move 2 squares in one direction and 1 square in the other direction.")
 
 
 class Rook(Piece):
@@ -133,7 +133,7 @@ class Rook(Piece):
     xdist = x-self.x
     ydist = y-self.y
     if (xdist == 0 and ydist == 0) or (xdist != 0 and ydist != 0):
-      raise MoveException("Rooks can only move in a straight line left, right, up or down.")
+      raise IllegalMoveException("Rooks can only move in a straight line left, right, up or down.")
 
     path_clear(self, board, x, y)
 
@@ -159,7 +159,7 @@ class Pawn(Piece):
 
     # Check the player hasn't moved backwards
     if (self.color == BLACK and ydist <= 0) or (self.color == WHITE and ydist >= 0):
-      raise MoveException("You can't move pawns backwards.")
+      raise IllegalMoveException("You can't move pawns backwards.")
 
     # Moving directly forward (no capture)
     if abs(xdist) == 0 and dst == None:
@@ -181,7 +181,7 @@ class Pawn(Piece):
       if (ydist == 1 and self.color == BLACK and type(target) == Pawn and target.en_passantable) or (
         ydist == -1 and self.color == WHITE and type(target) == Pawn and target.en_passantable):
         return outcomes.EN_PASSANTING, self.x+xdist, self.y
-    raise MoveException("Pawns can only move 1 square forward (or 2 from their starting position).")
+    raise IllegalMoveException("Pawns can only move 1 square forward (or 2 from their starting position).")
 
   def can_attack(self, board, x, y):
     # TODO: add en passant.
@@ -190,7 +190,7 @@ class Pawn(Piece):
     xdist = x-self.x
     ydist = y-self.y
     if (self.color == BLACK and ydist <= 0) or (self.color == WHITE and ydist >= 0):
-      raise MoveException("You can't move pawns backwards.")
+      raise IllegalMoveException("You can't move pawns backwards.")
     if abs(xdist) != 1 or abs(ydist) != 1:
-      raise MoveException("Pawns can only capture pieces diagonally in front of them.")
+      raise IllegalMoveException("Pawns can only capture pieces diagonally in front of them.")
 

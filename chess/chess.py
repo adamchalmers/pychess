@@ -58,7 +58,7 @@ class Game():
 
   def move(self, move):
     """Executes the move encoded in a Move object on the current game.
-       Raises MoveException if the move is illegal (fails validation)"""
+       Raises IllegalMoveException if the move is illegal (fails validation)"""
     if self.board.turn != move.player:
       raise ChessException("It's not your turn!")
     outcome = move.validate()
@@ -90,7 +90,7 @@ class Game():
           "N": piece.Knight(*args),
         }.get(move.promo)
         if new_piece is None:
-          raise MoveException("You didn't choose a new piece to promote your pawn to!")
+          raise IllegalMoveException("You didn't choose a new piece to promote your pawn to!")
         self.board._pieces.remove(move.piece)
         self.board._pieces.add(new_piece)
         move.piece = new_piece

@@ -3,7 +3,7 @@ from flask import jsonify
 class ChessException(Exception):
     pass
 
-class MoveException(ChessException):
+class IllegalMoveException(ChessException):
   pass
 
 WHITE = True
@@ -41,7 +41,7 @@ def path_clear(piece, board, dst_x, dst_y):
     if dst_x == x and dst_y == y:
       return
     if board.at(x,y) is not None:
-      raise MoveException("There's a piece in your way.")
+      raise IllegalMoveException("There's a piece in your way.")
     x += dx
     y += dy
-  raise MoveException("You can't reach that point.")
+  raise IllegalMoveException("You can't reach that point.")

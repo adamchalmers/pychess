@@ -76,7 +76,7 @@ class Board(object):
         try:
           p.can_attack(self, king.x, king.y)
           return True
-        except MoveException:
+        except IllegalMoveException:
           pass
     return False
 
@@ -89,6 +89,6 @@ class Board(object):
             try:
               m.validate()
               return True
-            except MoveException as e:
+            except IllegalMoveException as e:
               pass
     return False

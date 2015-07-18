@@ -1,7 +1,7 @@
 from chess import *
 from chess.piece import King, Rook, Pawn, Bishop
 from chess.board import Board
-from nose.tools import assert_equals
+from nose.tools import assert_equals, assert_raises
 import chess.outcomes
 
 def test_copy():
@@ -61,6 +61,8 @@ def test_checkmate():
   g.board._pieces = {bk, wr1, wr2, wk}
   assert_equals(g.board.moves_open(BLACK), True)
   assert_equals(g.move(Move(4, 4, 4, 1, WHITE, g.board)), outcomes.CHECKMATE)
+  with assert_raises(ChessException):
+    g.move(Move(0, 0, 0, 1, BLACK, g.board))
 
 def test_no_checkmate():
   g = Game(WHITE, "pw", "adam1")
@@ -69,6 +71,7 @@ def test_no_checkmate():
   g.board._pieces = {bk, wk}
   assert_equals(g.move(Move(7, 7, 7, 6, WHITE, g.board)), None)
   assert_equals(g.move(Move(0, 0, 0, 1, BLACK, g.board)), None)
+
 
 def test_stalemate():
   g = Game(WHITE, "pw", "adam1")

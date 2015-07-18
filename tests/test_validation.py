@@ -1,7 +1,7 @@
 from chess import *
 from nose.tools import assert_true, assert_equal, assert_raises
 
-BadMove = assert_raises(MoveException)
+BadMove = assert_raises(IllegalMoveException)
 
 def test_game_small():
   g = Game(WHITE, "pw", "game1")

@@ -31,7 +31,7 @@ class Move():
       return outcome
 
     except AssertionError as e:
-      raise MoveException(str(e))
+      raise IllegalMoveException(str(e))
 
   def __str__(self):
     return self._str
