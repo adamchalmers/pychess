@@ -15,7 +15,7 @@ class Game():
     self.board = Board()
     self.lock = threading.Lock()
     self.turns = 0
-    self.winner = None
+    self.winner = ""
 
   def pretty(self):
     src = self.pretty_no_borders()
@@ -62,7 +62,7 @@ class Game():
        Raises IllegalMoveException if the move is illegal (fails validation)"""
     if self.board.turn != move.player:
       raise ActionNotAllowedException("It's not your turn!")
-    if self.winner != None:
+    if self.winner != "":
       raise ActionNotAllowedException("Game is over!")
     outcome = move.validate()
 
@@ -110,14 +110,15 @@ class Game():
     # Check for checkmate
     if not self.board.moves_open(not move.piece.color):
       if self.board.checked(not move.piece.color):
-        self.winner = move.piece.color
+        self.winner = {WHITE: "w", BLACK: "b"}[move.piece.color]
       else:
-        self.winner = (WHITE, BLACK)
+        self.winner = "s"
 
   def serialize(self):
     return {"board": self.serialize_board, 
         "turn": color_to_str(self.board.turn),
-        "time": self.turns
+        "time": self.turns,
+        "winner": self.winner,
       }
 
   @property
