@@ -1,5 +1,6 @@
 from piece import King, Queen, Bishop, Knight, Rook, Pawn
 from utils import *
+from move import Move
 
 class Board(object):
   """Stores pieces on a chessboard."""
@@ -23,6 +24,7 @@ class Board(object):
     self._pieces.add(King(WHITE, 7, 3))
     self._pieces.add(Queen(BLACK, 0, 4))
     self._pieces.add(King(BLACK, 0, 3))
+    self.turn = WHITE
 
     for piece in self._pieces:
       piece.x, piece.y = piece.y, piece.x
@@ -73,4 +75,5 @@ class Board(object):
     return False
 
   def num_moves(self, player):
+    total = 0
     return 100

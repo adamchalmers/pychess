@@ -12,7 +12,6 @@ class Game():
     assert color in [WHITE, BLACK], "Invalid player"
     self.auth = {color: pw}
     self.board = Board()
-    self.turn = WHITE
     self.lock = threading.Lock()
     self.turns = 0
 
@@ -21,7 +20,7 @@ class Game():
     n = src.find("\n")
     header = "," + "="*26 + ".\n"
     out = header
-    if self.turn == WHITE:
+    if self.board.turn == WHITE:
       color = "w"
     else:
       color = "b"
@@ -37,7 +36,7 @@ class Game():
   def pretty_no_borders(self):
     out = self.game_id
     all_pieces = self.board.all_pieces()
-    if self.turn == WHITE:
+    if self.board.turn == WHITE:
       out += " (white)\n"
     else:
       out += " (black)\n"
@@ -68,16 +67,16 @@ class Game():
 
       if result == piece.CASTLING:
         x1, y1, x2, y2 = outcome[1:]
-        rook = move.game.board.at(x1,y1)
+        rook = move.board.at(x1,y1)
         assert type(rook) == piece.Rook
         rook.x = x2
         rook.y = y2
 
       elif result == piece.EN_PASSANTING:
         tx, ty = outcome[1:]
-        pawn = move.game.board.at(tx, ty)
+        pawn = move.board.at(tx, ty)
         assert type(pawn) == piece.Pawn
-        move.game.board._pieces.remove(pawn)
+        move.board._pieces.remove(pawn)
 
       elif result == piece.PROMOTING:
         args = move.player, move.piece.x, move.piece.y
@@ -98,13 +97,13 @@ class Game():
 
     # Execute the move.
     self.board.move(move.piece, move.x, move.y)
-    self.turn = not self.turn
+    self.board.turn = not self.board.turn
     move.piece.after_move()
     self.turns += 1
 
   def serialize(self):
     return {"board": self.serialize_board, 
-        "turn": color_to_str(self.turn),
+        "turn": color_to_str(self.board.turn),
         "time": self.turns
       }
 
