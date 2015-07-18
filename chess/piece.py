@@ -1,10 +1,5 @@
 from utils import WHITE, BLACK, path_clear, MoveException
-
-CASTLING = "CASTLING"
-EN_PASSANTING = "EN_PASSANTING"
-PROMOTING = "PROMOTING"
-CHECKMATE = "CHECKMATE"
-STALEMATE = "STALEMATE"
+import outcomes
 
 class Piece(object):
 
@@ -56,17 +51,17 @@ class King(Piece):
     xdist = x-self.x
     ydist = y-self.y
 
-    # Castling rules
-    castling = False
+    # outcomes.CASTLING rules
+    outcomes.CASTLING = False
     if self.has_moved == False and ydist == 0:
       if xdist == -2 and self.color == WHITE and board.at(0,7) is not None and board.at(0,7).char == "R":
-        return CASTLING, 0, 7, 2, 7
+        return outcomes.CASTLING, 0, 7, 2, 7
       if xdist == -2 and self.color == BLACK and board.at(0,0) is not None and board.at(0,0).char == "R":
-        return CASTLING, 0, 0, 2, 0
+        return outcomes.CASTLING, 0, 0, 2, 0
       if xdist == 3 and self.color == WHITE and board.at(7,7) is not None and board.at(7,7).char == "R":
-        return CASTLING, 7, 7, 5, 7
+        return outcomes.CASTLING, 7, 7, 5, 7
       if xdist == 3 and self.color == BLACK and board.at(7,0) is not None and board.at(7,0).char == "R":
-        return CASTLING, 7, 0, 5, 0
+        return outcomes.CASTLING, 7, 0, 5, 0
 
     if abs(xdist) > 1 or abs(ydist) > 1:
       raise MoveException("Kings can only move one square away.")
@@ -177,7 +172,7 @@ class Pawn(Piece):
       # Otherwise you can move forward one square
       elif abs(ydist) == 1:
         if (self.color == WHITE and y == 0) or (self.color == BLACK and y == 7):
-          return PROMOTING, 
+          return outcomes.PROMOTING, 
         return
 
     # Check en passant
@@ -185,12 +180,12 @@ class Pawn(Piece):
       target = board.at(self.x+xdist, self.y)
       if (ydist == 1 and self.color == BLACK and type(target) == Pawn and target.en_passantable) or (
         ydist == -1 and self.color == WHITE and type(target) == Pawn and target.en_passantable):
-        return EN_PASSANTING, self.x+xdist, self.y
+        return outcomes.EN_PASSANTING, self.x+xdist, self.y
     raise MoveException("Pawns can only move 1 square forward (or 2 from their starting position).")
 
   def can_attack(self, board, x, y):
     # TODO: add en passant.
-    # This and castling will require tagging the board state when moves are processed,
+    # This and outcomes.CASTLING will require tagging the board state when moves are processed,
     # so you can look at tags like 'check' or 'en passant' or 'castleable' to see if an action is valid.
     xdist = x-self.x
     ydist = y-self.y

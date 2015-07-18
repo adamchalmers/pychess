@@ -3,6 +3,7 @@ from utils import *
 from board import Board
 import threading
 import move
+import outcomes
 
 
 class Game():
@@ -67,20 +68,20 @@ class Game():
       result = outcome[0]
       print outcome
 
-      if result == piece.CASTLING:
+      if result == outcomes.CASTLING:
         x1, y1, x2, y2 = outcome[1:]
         rook = move.board.at(x1,y1)
         assert type(rook) == piece.Rook
         rook.x = x2
         rook.y = y2
 
-      elif result == piece.EN_PASSANTING:
+      elif result == outcomes.EN_PASSANTING:
         tx, ty = outcome[1:]
         pawn = move.board.at(tx, ty)
         assert type(pawn) == piece.Pawn
         move.board._pieces.remove(pawn)
 
-      elif result == piece.PROMOTING:
+      elif result == outcomes.PROMOTING:
         args = move.player, move.piece.x, move.piece.y
         new_piece = {
           "Q": piece.Queen(*args),
@@ -93,15 +94,9 @@ class Game():
         self.board._pieces.remove(move.piece)
         self.board._pieces.add(new_piece)
         move.piece = new_piece
-
-      elif result == piece.STALEMATE:
-        pass
-
-      elif result == piece.CHECKMATE:
-        pass
         
       else:
-        raise Exception("Unexpected special result %s" % str(outcome))
+        raise Exception("Unexpected outcome %s" % str(outcome))
 
     # Execute the move.
     self.board.move(move.piece, move.x, move.y)
@@ -112,9 +107,9 @@ class Game():
     # Check for checkmate
     if self.board.num_moves(not move.piece.color) == 0:
       if self.board.checked(not move.piece.color):
-        return piece.CHECKMATE
+        return outcomes.CHECKMATE
       else:
-        return piece.STALEMATE
+        return outcomes.STALEMATE
 
   def serialize(self):
     return {"board": self.serialize_board, 

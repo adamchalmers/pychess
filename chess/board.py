@@ -1,4 +1,4 @@
-from piece import King, Queen, Bishop, Knight, Rook, Pawn, CHECKMATE
+from piece import King, Queen, Bishop, Knight, Rook, Pawn
 from utils import *
 from move import Move
 
