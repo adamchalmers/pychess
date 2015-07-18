@@ -8,14 +8,15 @@ import outcomes
 
 class Game():
   
-  def __init__(self, color, pw, game_id):
-    self.game_id = game_id
+  def __init__(self, color, pw, game_id="chessgame"):
     assert color in [WHITE, BLACK], "Invalid player"
     self.auth = {color: pw}
     self.board = Board()
     self.lock = threading.Lock()
     self.turns = 0
     self.winner = ""
+    self.game_id = game_id
+
 
   def pretty(self):
     src = self.pretty_no_borders()

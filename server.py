@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, r
 from chess import *
 import logging
 app = Flask(__name__)
-games = {"adam1": Game(WHITE, "pw", "adam1")}
+games = {}
 
 class ChessServerError(ChessException):
   pass
@@ -107,7 +107,21 @@ def restart():
   app.run(debug=True)
   return redirect(url_for('/'))
 
+def starting_games():
+  games = {
+    "adam1": Game(WHITE, "pw"),
+    "endgame": Game(WHITE, "pw"),
+  }
+  games["endgame"].board._pieces = {
+    piece.King(WHITE, 4, 7), 
+    piece.King(BLACK, 4, 0),
+    piece.Rook(WHITE, 0, 7),
+    piece.Rook(WHITE, 7, 7),
+  }
+  return games
+
 if __name__ == "__main__":
   log = logging.getLogger('werkzeug')
   #log.setLevel(logging.ERROR)
+  games = starting_games()
   app.run(debug=True)
