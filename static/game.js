@@ -1,4 +1,4 @@
-
+gameOver = false;
 // How many milliseconds the client waits before checking game state
 REFRESH_RATE = 3 * 1000;
 // Canvas 2d context
@@ -66,7 +66,7 @@ function authenticateUser() {
 }
 
 function handleClick(evt) {
-    if (player == turn) {
+    if (!gameOver && player == turn) {
         var x = Math.floor((evt.offsetX - OFFSET)/TILE_SIZE);
         var y = Math.floor((evt.offsetY - OFFSET)/TILE_SIZE);
         if (x >= 0 && y >= 0 && x < 8 && y<8) {
@@ -190,6 +190,18 @@ function updateBoard(state) {
         $(".turn").text(state.turn);
 
         board = unpackBoard(state.board);
+        if (state.winner !== "") {
+            gameOver = true;
+            var text;
+            if ((state.winner == "w" && !isBlack()) || state.winner == "b" && isBlack()) {
+                text = "Congratulations! You won!";
+            } else if (state.winner == "s") {
+                text = "The game ends in stalemate. Well played!";
+            } else {
+                text = "You lose! Better luck next time.";
+            }
+            $("#status").text(text);
+        }
         drawBoard(board);
         $("#game").show();
     }

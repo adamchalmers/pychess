@@ -109,10 +109,9 @@ class Game():
     self.turns += 1
 
     # Check for checkmate
-    if not self.board.moves_open(not move.piece.color):
-      if self.board.checked(not move.piece.color):
+    if not self.board.moves_open(not move.piece.color) and self.board.checked(not move.piece.color):
         self.winner = {WHITE: "w", BLACK: "b"}[move.piece.color]
-      else:
+    elif not self.board.moves_open(WHITE) or not self.board.moves_open(BLACK):
         self.winner = "s"
 
   def serialize(self):
