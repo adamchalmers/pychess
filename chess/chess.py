@@ -105,7 +105,7 @@ class Game():
     self.turns += 1
 
     # Check for checkmate
-    if self.board.num_moves(not move.piece.color) == 0:
+    if not self.board.moves_open(not move.piece.color):
       if self.board.checked(not move.piece.color):
         return outcomes.CHECKMATE
       else:

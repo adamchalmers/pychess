@@ -80,8 +80,7 @@ class Board(object):
           pass
     return False
 
-  def num_moves(self, player):
-    total = 0
+  def moves_open(self, player):
     for piece in self._pieces:
       if piece.color == player:
         for x in range(7):
@@ -89,7 +88,7 @@ class Board(object):
             m = Move(piece.x, piece.y, x, y, player, self)
             try:
               m.validate()
-              total += 1
+              return True
             except MoveException as e:
               pass
-    return total
+    return False

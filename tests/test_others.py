@@ -50,7 +50,7 @@ def test_moves_tiny():
   king = King(BLACK, 0, 0)
   r = Rook(WHITE, 4, 0)
   board._pieces = {king, r}
-  assert_equals(board.num_moves(BLACK), 2)
+  assert_equals(board.moves_open(BLACK), True)
 
 def test_checkmate():
   g = Game(WHITE, "pw", "adam1")
@@ -59,7 +59,7 @@ def test_checkmate():
   wr2 = Rook(WHITE, 4, 4)
   wk = King(WHITE, 7, 7)
   g.board._pieces = {bk, wr1, wr2, wk}
-  assert_equals(g.board.num_moves(BLACK), 2)
+  assert_equals(g.board.moves_open(BLACK), True)
   assert_equals(g.move(Move(4, 4, 4, 1, WHITE, g.board)), outcomes.CHECKMATE)
 
 def test_no_checkmate():
