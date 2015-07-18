@@ -3,6 +3,9 @@ from flask import jsonify
 class ChessException(Exception):
     pass
 
+class ActionNotAllowedException(ChessException):
+  pass
+
 class IllegalMoveException(ChessException):
   pass
 

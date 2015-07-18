@@ -60,8 +60,9 @@ def test_checkmate():
   wk = King(WHITE, 7, 7)
   g.board._pieces = {bk, wr1, wr2, wk}
   assert_equals(g.board.moves_open(BLACK), True)
-  assert_equals(g.move(Move(4, 4, 4, 1, WHITE, g.board)), outcomes.CHECKMATE)
-  with assert_raises(ChessException):
+  g.move(Move(4, 4, 4, 1, WHITE, g.board))
+  assert_equals(g.winner, WHITE)
+  with assert_raises(ActionNotAllowedException):
     g.move(Move(0, 0, 0, 1, BLACK, g.board))
 
 def test_no_checkmate():
@@ -79,4 +80,5 @@ def test_stalemate():
   wr1 = Rook(WHITE, 1, 7)
   wr2 = Rook(WHITE, 7, 2)
   g.board._pieces = {bk, wr1, wr2}
-  assert_equals(g.move(Move(7, 2, 7, 1, WHITE, g.board)), outcomes.STALEMATE)
+  g.move(Move(7, 2, 7, 1, WHITE, g.board))
+  assert_equals(g.winner, (WHITE, BLACK))
