@@ -27,6 +27,13 @@ class Move():
       future.move(future.at(self.piece.x, self.piece.y), self.x, self.y)
       assert not future.checked(self.player), "This move would leave you in check."
 
+      # Have you checkmated your opponent?
+      if future.num_moves(not self.player) == 0:
+        if future.checked(not self.player):
+          return piece.CHECKMATE
+        else:
+          return piece.STALEMATE
+
       return outcome
 
     except AssertionError as e:

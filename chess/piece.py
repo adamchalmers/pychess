@@ -3,6 +3,8 @@ from utils import WHITE, BLACK, path_clear, MoveException
 CASTLING = "CASTLING"
 EN_PASSANTING = "EN_PASSANTING"
 PROMOTING = "PROMOTING"
+CHECKMATE = "CHECKMATE"
+STALEMATE = "STALEMATE"
 
 class Piece(object):
 
