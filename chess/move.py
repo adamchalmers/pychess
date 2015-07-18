@@ -27,12 +27,6 @@ class Move():
       future.move(future.at(self.piece.x, self.piece.y), self.x, self.y)
       assert not future.checked(self.player), "This move would leave you in check."
 
-      # Have you checkmated your opponent?
-      if future.num_moves(not self.player) == 0:
-        if future.checked(not self.player):
-          return piece.CHECKMATE
-        else:
-          return piece.STALEMATE
 
       return outcome
 
@@ -47,7 +41,6 @@ class Move():
     assert self.piece is not None, "There's no piece at this square."
     for i in [self.piece.x, self.piece.y, self.x, self.y]:
       assert i >= 0 and i < 8, "Invalid coordinate (%s)." % i
-    assert self.board.turn == self.player, "It's not your turn."
     assert self.player in [BLACK, WHITE], "Invalid player."
     dst = self.board.at(self.x, self.y)
     assert dst is None or dst.color != self.player, "You can't move a piece onto another of your pieces."

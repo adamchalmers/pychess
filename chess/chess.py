@@ -58,6 +58,8 @@ class Game():
   def move(self, move):
     """Executes the move encoded in a Move object on the current game.
        Raises MoveException if the move is illegal (fails validation)"""
+    if self.board.turn != move.player:
+      raise ChessException("It's not your turn!")
     outcome = move.validate()
 
     # Handle special rules, like castling or promotion
@@ -91,6 +93,12 @@ class Game():
         self.board._pieces.remove(move.piece)
         self.board._pieces.add(new_piece)
         move.piece = new_piece
+
+      elif result == piece.STALEMATE:
+        pass
+
+      elif result == piece.CHECKMATE:
+        pass
         
       else:
         raise Exception("Unexpected special result %s" % str(outcome))
@@ -100,6 +108,13 @@ class Game():
     self.board.turn = not self.board.turn
     move.piece.after_move()
     self.turns += 1
+
+    # Check for checkmate
+    if self.board.num_moves(not move.piece.color) == 0:
+      if self.board.checked(not move.piece.color):
+        return piece.CHECKMATE
+      else:
+        return piece.STALEMATE
 
   def serialize(self):
     return {"board": self.serialize_board, 

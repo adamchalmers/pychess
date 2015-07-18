@@ -1,4 +1,4 @@
-from piece import King, Queen, Bishop, Knight, Rook, Pawn
+from piece import King, Queen, Bishop, Knight, Rook, Pawn, CHECKMATE
 from utils import *
 from move import Move
 
@@ -60,11 +60,17 @@ class Board(object):
   def checked(self, player):
     """Returns True iff given player is currently checked."""
     # Find the player's king
+    king = None
     for p in self._pieces:
       if p.char == "K" and p.color == player:
         king = p
         break
-    assert king is not None
+
+    # In a valid chess game, there should always be a king...
+    # However many of the board configurations used it testing do NOT have
+    # a king! So assume you can't be checked.
+    if king is None:
+      return False
     for p in self._pieces:
       if p.color != player:
         try:
@@ -76,4 +82,14 @@ class Board(object):
 
   def num_moves(self, player):
     total = 0
-    return 100
+    for piece in self._pieces:
+      if piece.color == player:
+        for x in range(7):
+          for y in range(7):
+            m = Move(piece.x, piece.y, x, y, player, self)
+            try:
+              m.validate()
+              total += 1
+            except MoveException as e:
+              pass
+    return total

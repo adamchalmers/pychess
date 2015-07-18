@@ -56,16 +56,16 @@ class King(Piece):
     xdist = x-self.x
     ydist = y-self.y
 
-    # TODO: Add castling.
+    # Castling rules
     castling = False
     if self.has_moved == False and ydist == 0:
-      if xdist == -2 and self.color == WHITE and board.at(0,7).char == "R":
+      if xdist == -2 and self.color == WHITE and board.at(0,7) is not None and board.at(0,7).char == "R":
         return CASTLING, 0, 7, 2, 7
-      if xdist == -2 and self.color == BLACK and board.at(0,0).char == "R":
+      if xdist == -2 and self.color == BLACK and board.at(0,0) is not None and board.at(0,0).char == "R":
         return CASTLING, 0, 0, 2, 0
-      if xdist == 3 and self.color == WHITE and board.at(7,7).char == "R":
+      if xdist == 3 and self.color == WHITE and board.at(7,7) is not None and board.at(7,7).char == "R":
         return CASTLING, 7, 7, 5, 7
-      if xdist == 3 and self.color == BLACK and board.at(7,0).char == "R":
+      if xdist == 3 and self.color == BLACK and board.at(7,0) is not None and board.at(7,0).char == "R":
         return CASTLING, 7, 0, 5, 0
 
     if abs(xdist) > 1 or abs(ydist) > 1:

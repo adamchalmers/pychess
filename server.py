@@ -59,9 +59,9 @@ def move(game_id, player, x1, y1, x2, y2):
 
   player = str_to_color(player)
   try:
-    move = Move(x1, y1, x2, y2, player, games[game_id], promo=query.get("promo"))
+    move = Move(x1, y1, x2, y2, player, games[game_id].board, promo=query.get("promo"))
     games[game_id].move(move)
-  except MoveException as e:
+  except ChessException as e:
     return json_error(str(e))
 
   return state(game_id)

@@ -1,6 +1,7 @@
 from chess import *
 from chess.piece import King, Rook, Pawn, Bishop
 from chess.board import Board
+from nose.tools import assert_equals
 
 def test_copy():
   """Test piece copying."""
@@ -43,3 +44,35 @@ def test_copy():
   for piece in clone._pieces:
     assert piece not in board._pieces
 
+def test_moves_tiny():
+  board = Board()
+  king = King(BLACK, 0, 0)
+  r = Rook(WHITE, 4, 0)
+  board._pieces = {king, r}
+  assert_equals(board.num_moves(BLACK), 2)
+
+def test_checkmate():
+  g = Game(WHITE, "pw", "adam1")
+  bk = King(BLACK, 0, 0)
+  wr1 = Rook(WHITE, 4, 0)
+  wr2 = Rook(WHITE, 4, 4)
+  wk = King(WHITE, 7, 7)
+  g.board._pieces = {bk, wr1, wr2, wk}
+  assert_equals(g.board.num_moves(BLACK), 2)
+  assert_equals(g.move(Move(4, 4, 4, 1, WHITE, g.board)), piece.CHECKMATE)
+
+def test_no_checkmate():
+  g = Game(WHITE, "pw", "adam1")
+  bk = King(BLACK, 0, 0)
+  wk = King(WHITE, 7, 7)
+  g.board._pieces = {bk, wk}
+  assert_equals(g.move(Move(7, 7, 7, 6, WHITE, g.board)), None)
+  assert_equals(g.move(Move(0, 0, 0, 1, BLACK, g.board)), None)
+
+def test_stalemate():
+  g = Game(WHITE, "pw", "adam1")
+  bk = King(BLACK, 0, 0)
+  wr1 = Rook(WHITE, 1, 7)
+  wr2 = Rook(WHITE, 7, 2)
+  g.board._pieces = {bk, wr1, wr2}
+  assert_equals(g.move(Move(7, 2, 7, 1, WHITE, g.board)), piece.STALEMATE)

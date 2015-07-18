@@ -25,7 +25,7 @@ def test_validation_core():
   # Can't move an opponent's piece
   with BadMove: g.move(Move(0,1,0,2, WHITE, g.board))
   # Can't move if it's not your turn
-  with BadMove: g.move(Move(0,1,0,2, BLACK, g.board))
+  with assert_raises(ChessException): g.move(Move(0,1,0,2, BLACK, g.board))
   # Can't move invalid coordinates
   with BadMove: g.move(Move(0,8,0,5, WHITE, g.board))
   with BadMove: g.move(Move(0,-1,0,5, WHITE, g.board))
@@ -36,7 +36,7 @@ def test_validation_core():
   with BadMove: g.move(Move(0,6,0,9, WHITE, g.board))
   with BadMove: g.move(Move(0,6,0,-2, WHITE, g.board))
   # Can't move a non-player
-  with BadMove: g.move(Move(0,1,0,2, 3003, g.board))
+  with assert_raises(ChessException): g.move(Move(0,1,0,2, 3003, g.board))
 
 def test_validation_pawn():
   g = Game(WHITE, "pw", "game1")
