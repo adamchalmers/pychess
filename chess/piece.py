@@ -138,14 +138,7 @@ class Rook(Piece):
     if (xdist == 0 and ydist == 0) or (xdist != 0 and ydist != 0):
       raise MoveException("Rooks can only move in a straight line left, right, up or down.")
 
-    if xdist != 0:
-      path_clear(self, board, x, y)
-      return
-    else:
-      path_clear(self, board, x, y)
-      return
-
-    raise MoveException("Something very weird.")
+    path_clear(self, board, x, y)
 
 
 class Pawn(Piece):
