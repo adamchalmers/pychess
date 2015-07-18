@@ -113,10 +113,10 @@ def starting_games():
     "endgame": Game(WHITE, "pw"),
   }
   games["endgame"].board._pieces = {
-    piece.King(WHITE, 4, 7), 
-    piece.King(BLACK, 4, 0),
-    piece.Rook(WHITE, 0, 7),
-    piece.Rook(WHITE, 7, 7),
+    piece.King(WHITE, 4, 6), 
+    piece.King(BLACK, 7, 1),
+    piece.Rook(WHITE, 0, 2),
+    piece.Rook(WHITE, 6, 7),
   }
   return games
 

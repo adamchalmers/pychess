@@ -83,8 +83,8 @@ class Board(object):
   def moves_open(self, player):
     for piece in self._pieces:
       if piece.color == player:
-        for x in range(7):
-          for y in range(7):
+        for x in range(8):
+          for y in range(8):
             m = Move(piece.x, piece.y, x, y, player, self)
             try:
               m.validate()

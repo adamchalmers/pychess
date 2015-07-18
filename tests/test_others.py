@@ -76,6 +76,21 @@ def test_no_checkmate():
   g.move(Move(0, 0, 0, 1, BLACK, g.board))
   assert g.winner == ""
 
+def test_no_stalemate():
+  g = Game(WHITE, "pw")
+  g.board._pieces = {
+    piece.King(WHITE, 4, 6), 
+    piece.King(BLACK, 7, 1),
+    piece.Rook(WHITE, 0, 2),
+    piece.Rook(WHITE, 6, 7),
+  }
+  assert g.winner == ""
+  assert not g.board.checked(WHITE)
+  assert not g.board.checked(BLACK)
+  g.board.turn = BLACK
+  g.move(Move(7, 1, 7, 0, BLACK, g.board))
+  assert g.board.moves_open(WHITE)
+  assert g.board.moves_open(BLACK)
 
 def test_stalemate():
   g = Game(WHITE, "pw", "adam1")
