@@ -43,9 +43,9 @@ function drawCell(i, j, text, color, leaveHighlight) {
   if (text != ".") {
     ctx.font = "" + 24*CANVAS_SCALE + "px serif ";
     if (color) {
-        ctx.fillStyle = "#F60";
+        ctx.fillStyle = "#DB0";
     } else {
-        ctx.fillStyle = "#06F";
+        ctx.fillStyle = "#999";
     }
     ctx.fillText(
         text, 
