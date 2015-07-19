@@ -5,11 +5,32 @@ Chess
 {% endblock %}
 
 {% block content %}
-<a href="/new.html">Start a new game</a>
+<div id="newGame">
+  <input type="text" id="newGameId" placeholder="mygameid">
+  <button id="newBtn">Start a new game</button>
+  <img src="static/img/spinner.gif" style="display:none;">
+  <br><div id="nameTaken" class="error" style="display:none;">That name is already taken!</div>
+</div>
 <h2>Available games:</h2>
 <ul>
 {% for game in games %}
 	<li><a href="/game/{{ game }}">{{ game }}</a></li>
 {% endfor %}
 </ul>
+
+<script>
+$("#newBtn").on("click", function() {
+  var game_id = $("#newGameId").val();
+  $("#spinner").show();
+  $.get("/new/" + game_id, function(data) {
+    if (data.error === "") {
+      $("#nameTaken").hide();
+      window.location = "/game/" + game_id;
+    } else {
+      console.log('bad');
+      $("#nameTaken").show();
+    }
+  });
+});
+</script>
 {% endblock %}

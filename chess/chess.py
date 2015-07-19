@@ -8,9 +8,11 @@ import outcomes
 
 class Game():
   
-  def __init__(self, color, pw, game_id="chessgame"):
-    assert color in [WHITE, BLACK], "Invalid player"
-    self.auth = {color: pw}
+  def __init__(self, color=None, pw=None, game_id="chessgame"):
+    self.auth = {}
+    if color is not None and pw is not None:
+      assert color in [WHITE, BLACK], "Invalid player"
+      self.auth[color] = pw
     self.board = Board()
     self.lock = threading.Lock()
     self.turns = 0

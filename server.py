@@ -19,9 +19,12 @@ def game(game_id):
   else:
     return render_template("no_game.html", games=games)
 
-@app.route("/new.html")
-def new_game():
-  return render_template("new.html")
+@app.route("/new/<game_id>")
+def new_game(game_id):
+  if game_id in games:
+    return json_error("game already exists.")
+  games[game_id] = Game()
+  return json_error("")
 
 @app.route("/")
 def index():
