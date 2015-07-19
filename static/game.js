@@ -187,7 +187,16 @@ function updateBoard(state) {
         now = state.time;
 
         turn = state.turn;
-        $(".turn").text(state.turn);
+        var statusText;
+        if (turn == player) {
+            statusText = "It's your turn.";
+            if (state.check) {
+                statusText += " You're in check!"
+            }
+        } else {
+            statusText = "Waiting for your opponent.";
+        }
+        $("#status").text(statusText);
 
         board = unpackBoard(state.board);
         if (state.winner !== "") {

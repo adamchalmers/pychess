@@ -119,6 +119,7 @@ class Game():
         "turn": color_to_str(self.board.turn),
         "time": self.turns,
         "winner": self.winner,
+        "check": self.board.checked(self.board.turn),
       }
 
   @property
