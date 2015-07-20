@@ -3,6 +3,25 @@ CANVAS_SCALE = 2;
 OFFSET = 5;
 HL_SIZE = 5;
 
+chess_symbol = {
+    "K": "♔",
+    "Q": "♕",
+    "R": "♖",
+    "B": "♗",
+    "N": "♘",
+    "P": "♙"
+};
+
+
+chess_symbol_alt = {
+    "K": "♚",
+    "Q": "♛",
+    "R": "♜",
+    "B": "♝",
+    "N": "♞",
+    "P": "♟"
+};
+
 /*
  * Draw a board. Parameter is an 8x8 array of strings - pieces to draw.
  */
@@ -41,16 +60,16 @@ function drawCell(i, j, text, color, leaveHighlight) {
 
   // Write in the piece
   if (text != ".") {
-    ctx.font = "" + 24*CANVAS_SCALE + "px serif ";
+    ctx.font = "" + 40*CANVAS_SCALE + "px ChessCase";
     if (color) {
         ctx.fillStyle = "#DB0";
     } else {
         ctx.fillStyle = "#999";
     }
     ctx.fillText(
-        text, 
-        CANVAS_SCALE*(OFFSET + i*TILE_SIZE + 15), 
-        CANVAS_SCALE*(8*OFFSET + j*TILE_SIZE)
+        chess_symbol_alt[text], 
+        CANVAS_SCALE*(OFFSET + i*TILE_SIZE + 8), 
+        CANVAS_SCALE*(8*OFFSET + j*TILE_SIZE + 4)
     );
   }
 }
