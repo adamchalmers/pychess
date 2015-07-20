@@ -152,13 +152,17 @@ function unpackBoard(string) {
             board[i].push(string[i*16+j] + string[i*16+j+1]);
         }
     }
-    if (!isBlack()) {
-        return board;
+    if (isBlack()) {
+        return flipped(board);
     }
+    return board;
 
-    /*
-     * If player is playing black, rotate the board 180 degrees.
-     */
+}
+
+/*
+ * If player is playing black, rotate the board 180 degrees.
+ */
+ function flipped(board) {
     newBoard = [];
     for (var i = 0; i < 8; i++) {
         newBoard.push([]);
@@ -170,7 +174,7 @@ function unpackBoard(string) {
     return newBoard;
 }
 
-/*
+/* 
  * GET the board, then update with it.
  */
 function getBoard() {
@@ -191,7 +195,7 @@ function updateBoard(state) {
         if (turn == player) {
             statusText = "It's your turn.";
             if (state.check) {
-                statusText += " You're in check!"
+                statusText += " You're in check!";
             }
         } else {
             statusText = "Waiting for your opponent.";
