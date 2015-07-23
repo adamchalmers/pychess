@@ -163,14 +163,13 @@ function unpackBoard(string) {
  * If player is playing black, rotate the board 180 degrees.
  */
  function flipped(board) {
-    newBoard = [];
+    var newBoard = [];
     for (var i = 0; i < 8; i++) {
         newBoard.push([]);
         for (var j = 0; j < 8; j++) {
             newBoard[i][j] = board[7-i][7-j];
         }
     }
-    // return newBoard;
     return newBoard;
 }
 
