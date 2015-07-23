@@ -83,13 +83,29 @@ def auth():
   # Right now, if they log into a player who hasn't played yet,
   # just set the password they send as that player's pass and log them in.
   if color not in games[game_id].auth:
-    games[game_id].auth[color] = pw
-    return jsonify(error="NEWAUTH", data=request.form["color"])
+    #games[game_id].auth[color] = pw
+    return json_error("new auth")
 
   if games[game_id].auth[color] == pw:
     return json_data(request.form["color"])
   else:
     return json_error("wrong auth!")
+
+@app.route("/new_auth", methods=["POST"])
+def new_auth():
+  print "Adding new auth"
+  color = str_to_color(request.form["color"])
+  pw = request.form["pw"]
+  game_id = request.form["game_id"]
+
+  if game_id not in games:
+    return json_error("No such game ID!")
+
+  if color in games[game_id].auth:
+    return json_error("%s already has a password!" % color)
+
+  games[game_id].auth[color] = pw
+  return json_data(request.form["color"])
 
 
 #############################

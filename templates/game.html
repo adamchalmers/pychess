@@ -15,7 +15,11 @@
         <input type="radio" name="color" value="black" id="black"><label for="black">Black</label>
         <br>
         <span id="login">
-            <input type="password" autofocus name="pw" placeholder="Password">
+            <input type="password" autofocus name="pw" placeholder="Password" id="pw">
+            <div id="pw2fields" style="display:none;">
+                <input type="password" name="pw2" id="pw2">
+                <p>Please confirm your desired password:</p>
+            </div>
             <button id="submit" type="button">Submit</button>
         </span>
         <input type="hidden" name="game_id" id="game_id" value="{{ game_id }}">

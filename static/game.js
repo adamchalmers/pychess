@@ -37,32 +37,48 @@ function authenticateUser() {
         type: "POST",
         url: "/auth",
         data: $("#authForm").serialize(),
-        success: function(data) {
-
-            // If there's no error
-            if (!data.error || data.error=="NEWAUTH") {
-
-                if (data.error=="NEWAUTH") {
-                    alert("Welcome to the game.");
-                }
-                $(".error").text("");
-                $("#welcome").hide();
-                player = data.data;
-                $(".player").text(player);
-
-                // Draw the board every few seconds
-                getBoard();
-                window.setInterval(function(){
-                    getBoard();
-                }, REFRESH_RATE);
-
-            // If there is an error
-            } else {
-                $(".error").text("Wrong password.");
-            }
-        }
+        success: handleAuthResponse
     });
     return false;
+}
+
+function handleAuthResponse(data) {
+
+    // If there's no error
+    if (!data.error) {
+        $(".error").text("");
+        $("#welcome").hide();
+        player = data.data;
+        $(".player").text(player);
+
+        // Draw the board every few seconds
+        getBoard();
+        window.setInterval(function(){
+            getBoard();
+        }, REFRESH_RATE);
+
+    // If there is an error
+    } else if (data.error == "new auth") {
+        $("#pw2").on("blur", function() {
+            if ($("#pw2").val() != $("#pw").val()) {
+                $("#pw2fields p").attr("class", "error").text("Make sure your passwords match!");
+            } else {
+                $("#pw2fields p").attr("class", "fine").text("");
+            }
+        });
+        $("#submit").on("click", function() {
+            $.ajax({
+                type: "POST",
+                url: "/new_auth",
+                data: $("#authForm").serialize(),
+                success: handleAuthResponse
+            });
+        });
+        $("#pw2fields").show();
+    } else {
+        console.log(data);
+        $(".error").text("Wrong password.");
+    }
 }
 
 function handleClick(evt) {
