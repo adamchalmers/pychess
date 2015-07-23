@@ -14,9 +14,17 @@ squareSelected = null;
 // Strings, either 'white' or 'black'
 turn = undefined;
 player = undefined;
+MOBILE_WIDTH = 480;
 
 $(document).ready(function() {
-    ctx = $("#chessBoard")[0].getContext("2d");
+    var cb = $("#chessBoard");
+    if (window.screen.width < MOBILE_WIDTH) {
+        var size = 2*(window.screen.width-10);
+        cb.attr("width", size);
+        cb.attr("height", size);
+    }
+    cb.css("width", cb.attr("width")/2).css("height", cb.attr("height")/2);
+    ctx = cb[0].getContext("2d");
     $("#game").hide();
 
     // Ensure the form doesn't submit when the user presses 'enter'
